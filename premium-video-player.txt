@@ -1,0 +1,1167 @@
+Here is the complete, updated code with all your requested fixes and features implemented to mimic a real premium YouTube player layout.
+
+### Key Changes & Upgrades:
+
+1. **Multi-Ad Placement Engine:** * **Pre-roll Ad:** Plays seamlessly at the beginning before your main video.
+* **Mid-roll Ad:** Automatically triggers exactly at the midpoint of your main video's timeline.
+* **Post-roll Ad:** Triggers right when the main video finishes playing.
+
+
+2. **Ad Layer Fullscreen Option:** Added a dedicated fullscreen toggle button to the top-right corner of the ad layer layout.
+3. **White Explore Now Action Button:** The premium action overlay button on ads has been changed to clean white.
+4. **White Timeline Scrubber Thumb:** The progress bar slider handle thumb has been changed to white (`#ffffff`).
+5. **Fixed Cumulative Fast Forward/Rewind Symbols:** Cleaned up the formatting for the double-tap indicator toast text so that it renders standard `<< 10s` and `>> 10s` symbols correctly without text encoding artifacts.
+
+```html
+<div class="sr7-player" id="sr7Player">
+
+  <div class="sr7-ad-layer" id="sr7AdLayer">
+    <video
+      id="sr7AdVideo"
+      playsinline
+      preload="metadata"
+    ></video>
+    
+    <div class="sr7-ad-info-card" id="sr7AdCard">
+      <div class="sr7-card-left">
+        <img class="sr7-card-logo" id="sr7AdLogo" src="https://raw.githubusercontent.com/sr7saim45/sr7themes/refs/heads/main/ChatGPT%20Image%20Jun%2024%2C%202026%20at%2011_52_02%20PM.svg" alt="Ad Logo">
+        <div class="sr7-card-text">
+          <div class="sr7-card-title" id="sr7AdTitle">Example Ad</div>
+          <div class="sr7-card-url" id="sr7AdUrl">www.sr7themes.eu.org/</div>
+        </div>
+      </div>
+      <a class="sr7-card-btn" id="sr7AdActionLink" href="https://www.sr7themes.eu.org/" target="_blank" rel="noopener">Explore now</a>
+    </div>
+
+    <div class="sr7-ad-top-overlay">
+      <div class="sr7-ad-label">Advertisement</div>
+      <button id="sr7AdFullscreenBtn" class="sr7-control-btn small-btn" aria-label="Toggle Ad Fullscreen">
+        <svg viewBox='0 0 24 24' fill="none" stroke="currentColor" stroke-width="2"><path d='M2 9V6.5C2 4.01 4.01 2 6.5 2H9'></path><path d='M15 2H17.5C19.99 2 22 4.01 22 6.5V9'></path><path d='M22 16V17.5C22 19.99 19.99 22 17.5 22H16'></path><path d='M9 22H6.5C4.01 22 2 19.99 2 17.5V15'></path></svg>
+      </button>
+    </div>
+
+    <div class="sr7-ad-center-ctrl">
+      <button class="sr7-ad-toggle-play" id="sr7AdPlayPauseBtn" aria-label="Play Ad">
+        <svg class="line" viewBox="0 0 24 24"><path d="M4 11.9999V8.43989C4 4.01989 7.13 2.2099 10.96 4.4199L14.05 6.1999L17.14 7.9799C20.97 10.1899 20.97 13.8099 17.14 16.0199L14.05 17.7999L10.96 19.5799C7.13 21.7899 4 19.9799 4 15.5599V11.9999Z" stroke-miterlimit="10"></path></svg>
+      </button>
+    </div>
+
+    <div class="sr7-unmute-banner" id="sr7UnmuteBanner">
+      🔊 Tap to Unmute Sound
+    </div>
+
+    <div class="sr7-ad-bottom-panel">
+      <button id="sr7SkipAd" class="sr7-skip-ad" disabled>Skip Ad (5)</button>
+      
+      <div class="sr7-ad-controls-row">
+        <div class="sr7-ad-countdown" id="sr7AdCountdown">Ad: 0:00</div>
+        
+        <button id="sr7AdAudioToggleBtn" class="sr7-control-btn small-btn" aria-label="Toggle Ad Sound">
+          <svg id="sr7AdAudioIcon" class='line' viewBox='0 0 24 24'><path d='M2 10V14C2 16 3 17 5 17H6.43C6.8 17 7.17 17.11 7.49 17.3L10.41 19.13C12.93 20.71 15 19.56 15 16.59V7.41003C15 4.43003 12.93 3.29003 10.41 4.87003L7.49 6.70003C7.17 6.89003 6.8 7.00003 6.43 7.00003H5C3 7.00003 2 8.00003 2 10Z'></path><path d='M18 8C19.78 10.37 19.78 13.63 18 16'></path><path d='M19.83 5.5C22.72 9.35 22.72 14.65 19.83 18.5'></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="sr7-ad-progress-container">
+      <div class="sr7-ad-progress-bar" id="sr7AdProgressBar"></div>
+    </div>
+  </div>
+
+  <video
+    id="sr7Video"
+    class="sr7-video"
+    playsinline
+    preload="metadata"
+    oncontextmenu="return false;"
+    poster="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjqIlcuXKdIxk1hck_QZCiq5FaAl6ogvmhLfRPynZRGzXtl0ZdAU-qA_-HmBxD1rMNSGfi-XziQQeCSljf2ONLau3XOdHHehBAbcNthoot0neux5OuxHGhb_1huH9nj6I8QDVsUdQ7CrofvKqSphF4cbLobmx4_nELpLeZvWpSMh908SrgW_7-frcAf/w600-h337-p-k-no-nu-rw-e90/ignite.png"
+  ></video>
+
+  <div class="sr7-gesture-zone left" id="sr7GestureLeft"></div>
+  <div class="sr7-gesture-zone right" id="sr7GestureRight"></div>
+
+  <div class="sr7-skip-toast" id="sr7SkipToast">
+    <span class="sr7-skip-toast-text">10s</span>
+  </div>
+
+  <div class="sr7-center-controls" id="sr7CenterControls">
+    <button class="sr7-control-btn" id="sr7Back" aria-label="Rewind 10 Seconds">
+      <svg viewBox='0 0 24 24'><path d='M9.54 15.92V10.58L8.04 12.25'></path><path d='M10.02 4.47L12 2'></path><path d='M4.91 7.8C3.8 9.28 3.11 11.11 3.11 13.11C3.11 18.02 7.09 22 12 22C16.91 22 20.89 18.02 20.89 13.11C20.89 8.2 16.91 4.22 12 4.22C11.32 4.22 10.66 4.31 10.02 4.46'></path><path d='M14 10.58C15.1 10.58 16 11.48 16 12.58V13.93C16 15.03 15.1 15.93 14 15.93C12.9 15.93 12 15.03 12 13.93V12.58C12 11.47 12.9 10.58 14 10.58Z'></path></svg>
+    </button>
+
+    <button class="sr7-control-btn sr7-play-btn" id="sr7PlayPause" aria-label="Play or Pause">
+      <span id="sr7PlayIcon">
+        <svg class="line" viewBox="0 0 24 24"><path d="M4 11.9999V8.43989C4 4.01989 7.13 2.2099 10.96 4.4199L14.05 6.1999L17.14 7.9799C20.97 10.1899 20.97 13.8099 17.14 16.0199L14.05 17.7999L10.96 19.5799C7.13 21.7899 4 19.9799 4 15.5599V11.9999Z" stroke-miterlimit="10"></path></svg>
+      </span>
+    </button>
+
+    <button class="sr7-control-btn" id="sr7Forward" aria-label="Fast Forward 10 Seconds">
+      <svg viewBox='0 0 24 24'><path d='M13.98 4.47L12 2'></path><path d='M19.09 7.8C20.2 9.28 20.89 11.11 20.89 13.11C20.89 18.02 16.91 22 12 22C7.09 22 3.11 18.02 3.11 13.11C3.11 8.2 7.09 4.22 12 4.22C12.68 4.22 13.34 4.31 13.98 4.46'></path><path d='M9.54 15.92V10.58L8.04 12.25'></path><path d='M14 10.58C15.1 10.58 16 11.48 16 12.58V13.93C16 15.03 15.1 15.93 14 15.93C12.9 15.93 12 15.03 12 13.93V12.58C12 11.47 12.9 10.58 14 10.58Z'></path></svg>
+    </button>
+  </div>
+
+  <div class="sr7-bottom-controls" id="sr7BottomControls">
+    <div class="sr7-progress-wrap">
+      <input type="range" min="0" max="100" value="0" id="sr7Progress">
+      <div class="sr7-preview-tooltip" id="sr7PreviewTooltip">
+        <video id="sr7BufferPreview" muted playsinline></video>
+        <span id="sr7PreviewTime">0:00</span>
+      </div>
+    </div>
+
+    <div class="sr7-controls-row">
+      <div class="sr7-time">
+        <span id="sr7CurrentTime">0:00</span> / <span id="sr7Duration" style="cursor: pointer; user-select: none;">0:00</span>
+      </div>
+
+      <div class="sr7-right-controls">
+        <button id="sr7PipBtn" class="sr7-control-btn small-btn" aria-label="Picture in Picture">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 13h-6v6h6v-6zM4 6a2 2 0 012-2h12a2 2 0 012 2v5h-2V6H6v12h7v2H6a2 2 0 01-2-2V6z"/></svg>
+        </button>
+
+        <button id="sr7AudioToggleBtn" class="sr7-control-btn small-btn" aria-label="Toggle Sound">
+          <svg id="sr7AudioIcon" class='line' viewBox='0 0 24 24'><path d='M2 10V14C2 16 3 17 5 17H6.43C6.8 17 7.17 17.11 7.49 17.3L10.41 19.13C12.93 20.71 15 19.56 15 16.59V7.41003C15 4.43003 12.93 3.29003 10.41 4.87003L7.49 6.70003C7.17 6.89003 6.8 7.00003 6.43 7.00003H5C3 7.00003 2 8.00003 2 10Z'></path><path d='M18 8C19.78 10.37 19.78 13.63 18 16'></path><path d='M19.83 5.5C22.72 9.35 22.72 14.65 19.83 18.5'></path></svg>
+        </button>
+
+        <div class="sr7-quality">
+          <button id="sr7QualityBtn" class="sr7-control-btn small-btn" aria-label="Open Video Settings">
+            <svg class='line' viewBox='0 0 24 24'><path d='M6 9.85986V14.1499'></path><path d='M9 8.42993V15.5699'></path><path d='M12 7V17'></path><path d='M15 8.42993V15.5699'></path><path d='M18 9.85986V14.1499'></path><path d='M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z'></path></svg>
+          </button>
+
+          <div class="sr7-quality-menu" id="sr7QualityMenu">
+            <div class="sr7-menu-header">Resolution</div>
+            <button data-quality="1080" class="active">1080p ✓</button>
+            <button data-quality="720">720p</button>
+            <button data-quality="480">480p</button>
+            <button data-quality="360">360p</button>
+            <div class="sr7-menu-divider"></div>
+            <div class="sr7-menu-header">Playback Speed</div>
+            <div class="sr7-speed-grid">
+              <button class="speed-opt val-0-5" data-speed="0.5">0.5x</button>
+              <button class="speed-opt val-1 active" data-speed="1">1x</button>
+              <button class="speed-opt val-1-5" data-speed="1.5">1.5x</button>
+              <button class="speed-opt val-2" data-speed="2">2x</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="sr7Fullscreen" class="sr7-control-btn small-btn" aria-label="Toggle Fullscreen">
+          <span id="sr7FullscreenIcon">
+            <svg viewBox='0 0 24 24' fill="none" stroke="currentColor" stroke-width="2"><path d='M2 9V6.5C2 4.01 4.01 2 6.5 2H9'></path><path d='M15 2H17.5C19.99 2 22 4.01 22 6.5V9'></path><path d='M22 16V17.5C22 19.99 19.99 22 17.5 22H16'></path><path d='M9 22H6.5C4.01 22 2 19.99 2 17.5V15'></path></svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sr7ResumeToast" class="sr7-resume-toast">Resuming playback where you left off...</div>
+</div>
+
+<style>
+:root {
+  --sr7-main: #0b8877;
+  --sr7-secondary: #57717d;
+  --sr7-ad: #ffcc00;
+  --sr7-bg: rgba(255, 255, 255, 0.08);
+  --sr7-dark: #161b1f;
+  --sr7-border: rgba(255, 255, 255, 0.15);
+  --glass-bg: rgba(22, 27, 31, 0.75);
+  --glass-blur: 20px;
+}
+
+.sr7-player {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 30px auto;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #000;
+  isolation: isolate;
+  font-family: inherit;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.sr7-video, #sr7AdVideo {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16/9;
+  background: #000;
+  user-select: none;
+}
+
+.sr7-ad-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: #000;
+}
+
+.sr7-ad-top-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  z-index: 25;
+}
+
+.sr7-ad-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #000;
+  background: var(--sr7-ad);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: inherit;
+}
+
+.sr7-ad-bottom-panel {
+  position: absolute;
+  right: 20px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  z-index: 29;
+}
+
+.sr7-ad-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--sr7-border);
+}
+
+.sr7-ad-countdown {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.sr7-skip-ad {
+  border: 1px solid var(--sr7-border);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  font-family: inherit;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.sr7-skip-ad:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sr7-ad-info-card {
+  position: absolute;
+  left: 20px;
+  bottom: 24px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-width: 280px;
+  max-width: 380px;
+  z-index: 26;
+  font-family: inherit;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: transform 0.2s ease;
+}
+
+.sr7-card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sr7-card-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: #fff;
+}
+
+.sr7-card-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sr7-card-title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sr7-card-url {
+  color: rgba(255,255,255,0.6);
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+/* Changed action link button background to clean premium white */
+.sr7-card-btn {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+.sr7-card-btn:hover {
+  opacity: 0.9;
+}
+
+.sr7-ad-center-ctrl {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 24;
+  pointer-events: none;
+}
+
+.sr7-ad-toggle-play {
+  pointer-events: auto;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.sr7-ad-toggle-play svg.line {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.sr7-unmute-banner {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 27;
+  display: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.sr7-ad-progress-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 28;
+}
+
+.sr7-ad-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--sr7-ad);
+  transition: width 0.1s linear;
+}
+
+.sr7-gesture-zone {
+  position: absolute;
+  top: 0;
+  bottom: 60px;
+  width: 35%;
+  z-index: 10;
+  user-select: none;
+}
+.sr7-gesture-zone.left { left: 0; }
+.sr7-gesture-zone.right { right: 0; }
+
+.sr7-skip-toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 16px;
+  z-index: 18;
+  opacity: 0;
+  pointer-events: none;
+  font-family: inherit;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+}
+.sr7-skip-toast.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.sr7-center-controls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 35px;
+  z-index: 15;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sr7-control-btn {
+  pointer-events: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), background 0.2s ease;
+}
+
+.sr7-play-btn { width: 76px; height: 76px; }
+
+.sr7-control-btn.small-btn { 
+  width: 36px; 
+  height: 36px; 
+  background: transparent; 
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.sr7-control-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sr7-control-btn.small-btn:hover {
+  background: transparent;
+  opacity: 0.85;
+}
+
+.sr7-control-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sr7-play-btn svg.line { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+.sr7-bottom-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+  z-index: 16;
+  transition: opacity 0.3s ease;
+}
+
+.sr7-progress-wrap { 
+  position: relative; 
+  margin-bottom: 16px; 
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+#sr7Progress {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  outline: none;
+  margin: 0;
+  vertical-align: middle;
+  transition: height 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sr7-progress-wrap:hover #sr7Progress { 
+  height: 6px; 
+}
+
+#sr7Progress::-webkit-slider-runnable-track {
+  width: 100%;
+  background: linear-gradient(to right, var(--sr7-main) var(--progress-percent, 0%), rgba(255, 255, 255, 0.25) var(--progress-percent, 0%));
+  height: 100%;
+  border-radius: 2px;
+}
+
+#sr7Progress::-moz-range-track {
+  width: 100%;
+  background: linear-gradient(to right, var(--sr7-main) var(--progress-percent, 0%), rgba(255, 255, 255, 0.25) var(--progress-percent, 0%));
+  height: 100%;
+  border-radius: 2px;
+}
+
+/* Custom White YouTube Scrubber Thumb Handle */
+#sr7Progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: calc((4px / 2) - (13px / 2));
+  transform: scale(0);
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.1s ease;
+}
+
+#sr7Progress::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  transform: scale(0);
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sr7-progress-wrap:hover #sr7Progress::-webkit-slider-thumb {
+  transform: scale(1);
+  margin-top: calc((6px / 2) - (13px / 2));
+}
+
+.sr7-progress-wrap:hover #sr7Progress::-moz-range-thumb {
+  transform: scale(1);
+}
+
+.sr7-preview-tooltip {
+  position: absolute;
+  bottom: 24px;
+  transform: translateX(-50%) scale(0.9);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid var(--sr7-border);
+  border-radius: 10px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 40;
+}
+.sr7-preview-tooltip.show {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+.sr7-preview-tooltip video {
+  width: 140px;
+  aspect-ratio: 16/9;
+  border-radius: 6px;
+  background: #000;
+  object-fit: cover;
+}
+.sr7-preview-tooltip span {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.sr7-controls-row { display: flex; justify-content: space-between; align-items: center; }
+.sr7-time { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; letter-spacing: 0.3px; font-family: inherit; }
+.sr7-right-controls { display: flex; align-items: center; gap: 14px; position: relative; }
+
+.sr7-quality { position: relative; }
+.sr7-quality-menu {
+  position: absolute;
+  right: 0;
+  bottom: 55px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--sr7-border);
+  border-radius: 16px;
+  min-width: 160px;
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
+  z-index: 30;
+  font-family: inherit;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+}
+.sr7-quality-menu.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.sr7-menu-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  padding: 6px 10px 4px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.sr7-menu-divider { height: 1px; background: var(--sr7-border); margin: 6px 0; }
+
+.sr7-quality-menu button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.8);
+  padding: 8px 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+.sr7-quality-menu button:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.sr7-quality-menu button.active { color: var(--sr7-main); font-weight: 600; }
+
+.sr7-speed-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 4px; }
+.sr7-speed-grid button { text-align: center; padding: 6px; }
+
+.sr7-hidden { opacity: 0 !important; pointer-events: none !important; }
+
+.sr7-resume-toast {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--sr7-border);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  font-family: inherit;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.sr7-resume-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media(max-width:768px) {
+  .sr7-center-controls { gap: 20px; }
+  .sr7-control-btn { width: 50px; height: 50px; }
+  .sr7-play-btn { width: 64px; height: 64px; }
+  .sr7-control-btn svg { width: 20px; height: 20px; }
+  .sr7-play-btn svg.line { width: 26px; height: 26px; }
+  .sr7-bottom-controls { padding: 16px; }
+  .sr7-ad-info-card { min-width: calc(100% - 40px); bottom: auto; top: 140px; left: 20px; padding: 10px; gap: 10px; }
+  .sr7-card-title { font-size: 14px; }
+  .sr7-ad-bottom-panel { right: 10px; bottom: 15px; }
+}
+</style>
+
+<script>
+const SR7_CONFIG = {
+  adVideoUrl: "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/vidssave.com%20Google%20AI%20Pro%20-%20YouTube%20Premium%20Lite%20Bundle%20720P.mp4",
+  mainVideoUrl: "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/222.mp4",
+  skipAfter: 5,
+  adLogo: "https://raw.githubusercontent.com/sr7saim45/sr7themes/refs/heads/main/ChatGPT%20Image%20Jun%2024%2C%202026%20at%2011_52_02%20PM.svg",
+  adTitle: "Example Ad",
+  adUrlText: "www.sr7themes.eu.org",
+  adTargetUrl: "https://www.sr7themes.eu.org"
+};
+  
+const VIDEO_SOURCES = {
+  "1080": "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/222.mp4",
+  "720": "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/222.mp4",
+  "480": "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/222.mp4",
+  "360": "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/222.mp4"
+};  
+
+// DOM Elements
+const player = document.getElementById("sr7Player");
+const video = document.getElementById("sr7Video");
+const adVideo = document.getElementById("sr7AdVideo");
+const adLayer = document.getElementById("sr7AdLayer");
+const skipBtn = document.getElementById("sr7SkipAd");
+const adCountdown = document.getElementById("sr7AdCountdown");  
+const playBtn = document.getElementById("sr7PlayPause");
+const backBtn = document.getElementById("sr7Back");
+const forwardBtn = document.getElementById("sr7Forward");
+const progress = document.getElementById("sr7Progress");
+const currentTimeEl = document.getElementById("sr7CurrentTime");
+const durationEl = document.getElementById("sr7Duration");
+const fullscreenBtn = document.getElementById("sr7Fullscreen");
+const adFullscreenBtn = document.getElementById("sr7AdFullscreenBtn");
+const centerControls = document.getElementById("sr7CenterControls");
+const bottomControls = document.getElementById("sr7BottomControls");
+const qualityBtn = document.getElementById("sr7QualityBtn");
+const qualityMenu = document.getElementById("sr7QualityMenu");
+const skipToast = document.getElementById("sr7SkipToast");
+const pipBtn = document.getElementById("sr7PipBtn");
+const audioToggleBtn = document.getElementById("sr7AudioToggleBtn");
+const audioIcon = document.getElementById("sr7AudioIcon");
+
+const adAudioToggleBtn = document.getElementById("sr7AdAudioToggleBtn");
+const adAudioIcon = document.getElementById("sr7AdAudioIcon");
+
+const previewTooltip = document.getElementById("sr7PreviewTooltip");
+const bufferPreview = document.getElementById("sr7BufferPreview");
+const previewTime = document.getElementById("sr7PreviewTime");
+
+const adProgressBar = document.getElementById("sr7AdProgressBar");
+const adPlayPauseBtn = document.getElementById("sr7AdPlayPauseBtn");
+const adPlayIconSvg = document.getElementById("sr7AdPlayPauseBtn"); 
+const unmuteBanner = document.getElementById("sr7UnmuteBanner");
+
+let controlsTimeout;
+let adPlaying = true;
+let currentAdPosition = "pre"; // Track position state: 'pre', 'mid', 'post'
+let midrollTriggered = false;
+let skipCountdown = SR7_CONFIG.skipAfter;
+let cumulativeSkip = 0;
+let skipClearTimeout;
+let showTimeRemaining = false; 
+const STORAGE_KEY = "sr7-progress-" + btoa(SR7_CONFIG.mainVideoUrl);  
+
+const playSVG = `<svg class="line" viewBox="0 0 24 24"><path d="M4 11.9999V8.43989C4 4.01989 7.13 2.2099 10.96 4.4199L14.05 6.1999L17.14 7.9799C20.97 10.1899 20.97 13.8099 17.14 16.0199L14.05 17.7999L10.96 19.5799C7.13 21.7899 4 19.9799 4 15.5599V11.9999Z" stroke-miterlimit="10"></path></svg>`;
+const pauseSVG = `<svg class='line' viewBox='0 0 24 24'><path d='M10.65 19.11V4.89C10.65 3.54 10.08 3 8.64 3H5.01C3.57 3 3 3.54 3 4.89V19.11C3 20.46 3.57 21 5.01 21H8.64C10.08 21 10.65 20.46 10.65 19.11Z'></path><path d='M21 19.11V4.89C21 3.54 20.43 3 18.99 3H15.36C13.93 3 13.35 3.54 13.35 4.89V19.11C13.35 20.46 13.92 21 15.36 21H18.99C20.43 21 21 20.46 21 19.11Z'></path></svg>`;
+const soundOnSVG = `<svg class='line' viewBox='0 0 24 24'><path d='M2 10V14C2 16 3 17 5 17H6.43C6.8 17 7.17 17.11 7.49 17.3L10.41 19.13C12.93 20.71 15 19.56 15 16.59V7.41003C15 4.43003 12.93 3.29003 10.41 4.87003L7.49 6.70003C7.17 6.89003 6.8 7.00003 6.43 7.00003H5C3 7.00003 2 8.00003 2 10Z'></path><path d='M18 8C19.78 10.37 19.78 13.63 18 16'></path><path d='M19.83 5.5C22.72 9.35 22.72 14.65 19.83 18.5'></path></svg>`;
+const soundOffSVG = `<svg class='line' viewBox='0 0 24 24'><path d='M15 8.37003V7.41003C15 4.43003 12.93 3.29003 10.41 4.87003L7.49 6.70003C7.17 6.89003 6.8 7.00003 6.43 7.00003H5C3 7.00003 2 8.00003 2 10V14C2 16 3 17 5 17H7'></path><path d='M10.41 19.13C12.93 20.71 15 19.56 15 16.59V12.95'></path><path d='M18.81 9.41992C19.71 11.5699 19.44 14.0799 18 15.9999'></path><path d='M21.15 7.80005C22.62 11.29 22.18 15.37 19.83 18.5'></path><path d='M22 2L2 22'></path></svg>`;
+
+/* --------------------------
+   AD ENGINE LAYER LOGIC
+-------------------------- */
+document.getElementById("sr7AdLogo").src = SR7_CONFIG.adLogo;
+document.getElementById("sr7AdTitle").textContent = SR7_CONFIG.adTitle;
+document.getElementById("sr7AdUrl").textContent = SR7_CONFIG.adUrlText;
+document.getElementById("sr7AdActionLink").href = SR7_CONFIG.adTargetUrl;
+
+video.src = SR7_CONFIG.mainVideoUrl;
+bufferPreview.src = SR7_CONFIG.mainVideoUrl;
+adVideo.src = SR7_CONFIG.adVideoUrl;
+player.classList.add("adPlaying");
+
+adPlayIconSvg.innerHTML = playSVG;
+adVideo.muted = false; 
+unmuteBanner.style.display = "none";
+
+let adTimer;
+
+function launchAdBlock(position) {
+  adPlaying = true;
+  currentAdPosition = position;
+  skipCountdown = SR7_CONFIG.skipAfter;
+  
+  skipBtn.disabled = true;
+  skipBtn.innerText = "Skip Ad (" + skipCountdown + ")";
+  adProgressBar.style.width = "0%";
+  
+  player.classList.add("adPlaying");
+  adLayer.style.display = "block";
+  
+  adVideo.currentTime = 0;
+  adVideo.play();
+  adPlayIconSvg.innerHTML = pauseSVG;
+  
+  startAdCountdownEngine();
+}
+
+function startAdCountdownEngine() {
+  if (adTimer) clearInterval(adTimer);
+  adTimer = setInterval(() => {
+    if (!adVideo.paused) { 
+      skipCountdown--;
+      if(skipCountdown > 0){
+        skipBtn.innerText = "Skip Ad (" + skipCountdown + ")";
+      } else {
+        skipBtn.disabled = false;
+        skipBtn.innerText = "Skip Ad";
+        clearInterval(adTimer);
+        adTimer = null;
+      }
+    }
+  }, 1000);
+}
+
+// Start initial configuration initialization setup
+startAdCountdownEngine();
+
+function toggleAdPlay() {
+  if (!adPlaying) return;
+  if (adVideo.paused) {
+    adVideo.play();
+    adPlayIconSvg.innerHTML = pauseSVG;
+    if (skipCountdown > 0 && !adTimer) startAdCountdownEngine();
+  } else {
+    adVideo.pause();
+    adPlayIconSvg.innerHTML = playSVG;
+    if (adTimer) { clearInterval(adTimer); adTimer = null; }
+  }
+}
+
+adPlayPauseBtn.addEventListener("click", toggleAdPlay);
+
+function stopAdAndResumeMainVideo(){
+  if(!adPlaying) return;
+  if(adTimer) { clearInterval(adTimer); adTimer = null; }
+  adPlaying = false;
+  player.classList.remove("adPlaying");
+  adVideo.pause();
+  adLayer.style.display = "none";
+  
+  if (currentAdPosition === "pre" || currentAdPosition === "mid") {
+    video.play();
+  } else if (currentAdPosition === "post") {
+    // Post roll complete reset timeline to index start point position tracking safely
+    video.currentTime = 0;
+    midrollTriggered = false;
+    updateTimelineFill(0, video.duration);
+  }
+}
+
+skipBtn.addEventListener("click", stopAdAndResumeMainVideo);
+adVideo.addEventListener("ended", stopAdAndResumeMainVideo);
+
+/* --------------------------
+   MAIN VIDEO ENGINE CONTROLS
+-------------------------- */
+playBtn.addEventListener("click", togglePlay);
+video.addEventListener("click", togglePlay);
+
+function togglePlay() {
+  if(adPlaying) return;
+  if(video.paused) { video.play(); } else { video.pause(); }
+}
+
+video.addEventListener("play", () => { document.getElementById("sr7PlayIcon").innerHTML = pauseSVG; });
+video.addEventListener("pause", () => { document.getElementById("sr7PlayIcon").innerHTML = playSVG; });
+
+/* --------------------------
+   AUDIO VOLUME MANAGEMENT
+-------------------------- */
+audioToggleBtn.addEventListener("click", () => {
+  if (!adPlaying) {
+    video.muted = !video.muted;
+    syncVolumeIcon(video.muted, audioIcon);
+  }
+});
+
+adAudioToggleBtn.addEventListener("click", () => {
+  if (adPlaying) {
+    adVideo.muted = !adVideo.muted;
+    syncVolumeIcon(adVideo.muted, adAudioIcon);
+  }
+});
+
+function syncVolumeIcon(isMuted, element) {
+  element.innerHTML = isMuted ? soundOffSVG : soundOnSVG;
+}
+
+/* --------------------------
+   TIMELINE HOVER SLIDER SNEAK PREVIEW
+-------------------------- */
+progress.addEventListener("mousemove", (e) => {
+  if (adPlaying) return;
+  const rect = progress.getBoundingClientRect();
+  const offsetX = e.clientX - rect.left;
+  const percent = Math.min(Math.max(0, offsetX / rect.width), 1);
+  const targetTime = percent * video.duration;
+
+  previewTooltip.style.left = `${offsetX}px`;
+  previewTime.textContent = formatTime(targetTime);
+  bufferPreview.currentTime = targetTime;
+  previewTooltip.classList.add("show");
+});
+
+progress.addEventListener("mouseleave", () => {
+  previewTooltip.classList.remove("show");
+});
+
+/* --------------------------
+   PICTURE IN PICTURE CONFIGURATION
+-------------------------- */
+pipBtn.addEventListener("click", async () => {
+  if (adPlaying) return;
+  try {
+    if (document.pictureInPictureElement) {
+      await document.exitPictureInPicture();
+    } else {
+      await video.requestPictureInPicture();
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+/* --------------------------
+   SKIP REWINDIndicator LOGIC WITH TEXT TOAST CLEAN FIX
+-------------------------- */
+function executeSkip(amount) {
+  if (adPlaying) return;
+  clearTimeout(skipClearTimeout);
+  if ((amount > 0 && cumulativeSkip < 0) || (amount < 0 && cumulativeSkip > 0)) {
+    cumulativeSkip = 0;
+  }
+  cumulativeSkip += amount;
+  video.currentTime = Math.min(video.duration, Math.max(0, video.currentTime + amount));
+  
+  // FIXED: Standard bracket clean visual layout formatting representation avoiding entities glitching
+  skipToast.querySelector('.sr7-skip-toast-text').innerText = (cumulativeSkip > 0 ? ">> " : "<< ") + Math.abs(cumulativeSkip) + "s";
+  skipToast.classList.add("active");
+  
+  skipClearTimeout = setTimeout(() => {
+    skipToast.classList.remove("active");
+    cumulativeSkip = 0;
+  }, 900);
+}
+
+backBtn.addEventListener("click", () => executeSkip(-10));
+forwardBtn.addEventListener("click", () => executeSkip(10));
+document.getElementById("sr7GestureLeft").addEventListener("dblclick", () => executeSkip(-10));
+document.getElementById("sr7GestureRight").addEventListener("dblclick", () => executeSkip(10));
+
+/* --------------------------
+   QUALITY MENUS MANAGEMENT
+-------------------------- */
+qualityBtn.onclick = (e) => {
+  e.stopPropagation();
+  qualityMenu.classList.toggle("show");
+};
+
+document.addEventListener("click", (e) => {
+  if(!e.target.closest(".sr7-quality")) { qualityMenu.classList.remove("show"); }
+});
+
+document.querySelectorAll(".sr7-quality-menu button[data-quality]").forEach(btn => {
+  btn.onclick = () => {
+    if(adPlaying) return;
+    document.querySelectorAll(".sr7-quality-menu button[data-quality]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    
+    const time = video.currentTime;
+    const isPaused = video.paused;
+    
+    video.src = VIDEO_SOURCES[btn.dataset.quality] || SR7_CONFIG.mainVideoUrl;
+    bufferPreview.src = VIDEO_SOURCES[btn.dataset.quality] || SR7_CONFIG.mainVideoUrl;
+    video.load();
+    
+    video.addEventListener('loadeddata', function onData() {
+      video.currentTime = time;
+      if(!isPaused) video.play();
+      video.removeEventListener('loadeddata', onData);
+    });
+    qualityMenu.classList.remove("show");
+  };
+});
+
+document.querySelectorAll(".sr7-speed-grid button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".sr7-speed-grid button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    video.playbackRate = parseFloat(btn.dataset.speed);
+  };
+});
+
+function formatTime(sec){
+  if(isNaN(sec)) return "0:00";
+  let minutes = Math.floor(sec / 60);
+  let seconds = Math.floor(sec % 60);
+  return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+}
+
+function updateDurationDisplay() {
+  if (isNaN(video.duration)) return;
+  if (showTimeRemaining) {
+    const remainingTime = Math.max(0, video.duration - video.currentTime);
+    durationEl.textContent = "-" + formatTime(remainingTime);
+  } else {
+    durationEl.textContent = formatTime(video.duration);
+  }
+}
+
+durationEl.addEventListener("click", () => {
+  if (adPlaying) return;
+  showTimeRemaining = !showTimeRemaining;
+  updateDurationDisplay();
+});
+
+video.addEventListener("loadedmetadata", () => {
+  updateDurationDisplay();
+  const savedTime = localStorage.getItem(STORAGE_KEY);
+  if(savedTime && parseFloat(savedTime) < video.duration - 5){
+    video.currentTime = parseFloat(savedTime);
+    const toast = document.getElementById("sr7ResumeToast");
+    if(toast){
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+  }
+  // Initialize dynamic reset parameters safely
+  midrollTriggered = false;
+});
+
+function updateTimelineFill(current, max) {
+  const percent = max > 0 ? (current / max) * 100 : 0;
+  progress.style.setProperty('--progress-percent', percent + '%');
+}
+
+/* --------------------------
+   MULTI-AD TIMING EVENTS PATTERN
+-------------------------- */
+video.addEventListener("timeupdate", () => {
+  if (adPlaying) return;
+  
+  progress.value = (video.currentTime / video.duration) * 100;
+  updateTimelineFill(video.currentTime, video.duration);
+  currentTimeEl.textContent = formatTime(video.currentTime);
+  updateDurationDisplay();
+  localStorage.setItem(STORAGE_KEY, video.currentTime);
+  
+  // YOUTUBE STYLE MID-ROLL TRIGGER EVENT (Hits at 50% runtime length markers)
+  if (video.duration > 0) {
+    const midpoint = video.duration / 2;
+    if (video.currentTime >= midpoint && !midrollTriggered) {
+      midrollTriggered = true;
+      video.pause();
+      launchAdBlock("mid");
+    }
+  }
+});
+
+// YOUTUBE STYLE POST-ROLL TRIGGER EVENT (Hits when primary source track completes execution)
+video.addEventListener("ended", () => {
+  localStorage.removeItem(STORAGE_KEY);
+  launchAdBlock("post");
+});
+
+adVideo.addEventListener("timeupdate", () => {
+  if (!adPlaying) return;
+  const adPercent = (adVideo.currentTime / adVideo.duration) * 100;
+  adProgressBar.style.width = adPercent + "%";
+  const remain = Math.max(0, adVideo.duration - adVideo.currentTime);
+  adCountdown.textContent = "Ad: " + formatTime(remain);
+});
+
+progress.addEventListener("input", () => {
+  if(adPlaying) return;
+  video.currentTime = (progress.value / 100) * video.duration;
+  updateTimelineFill(video.currentTime, video.duration);
+  updateDurationDisplay();
+});
+
+/* --------------------------
+   FULLSCREEN OPERATIONS (MAIN AND ADS)
+-------------------------- */
+const toggleFullscreen = async () => {
+  if(!document.fullscreenElement){
+    await player.requestFullscreen().catch(()=>{});
+    if(screen.orientation) { screen.orientation.lock("landscape").catch(()=>{}); }
+  } else {
+    document.exitFullscreen();
+  }
+};
+
+fullscreenBtn.addEventListener("click", toggleFullscreen);
+adFullscreenBtn.addEventListener("click", toggleFullscreen);
+
+/* --------------------------
+   KEYBOARD COMMAND ROUTINES
+-------------------------- */
+document.addEventListener("keydown", (e) => {
+  if (document.activeElement.tagName === 'INPUT') return;
+  if (adPlaying) {
+    if (e.key === " ") { e.preventDefault(); toggleAdPlay(); }
+    return;
+  }
+  switch(e.key.toLowerCase()) {
+    case " ":
+    case "k": e.preventDefault(); togglePlay(); break;
+    case "f": e.preventDefault(); toggleFullscreen(); break;
+    case "m": e.preventDefault(); video.muted = !video.muted; syncVolumeIcon(video.muted, audioIcon); break;
+    case "arrowleft": e.preventDefault(); executeSkip(-10); break;
+    case "arrowright": e.preventDefault(); executeSkip(10); break;
+  }
+});
+
+/* --------------------------
+   AUTO HIDE CONTROLS OVERLAY INTERFACE
+-------------------------- */
+function showControls(){
+  centerControls.classList.remove("sr7-hidden");
+  bottomControls.classList.remove("sr7-hidden");
+  player.style.cursor = "default";
+  clearTimeout(controlsTimeout);
+  controlsTimeout = setTimeout(() => {
+    if(!video.paused && !qualityMenu.classList.contains("show")){
+      centerControls.classList.add("sr7-hidden");
+      bottomControls.classList.add("sr7-hidden");
+      player.style.cursor = "none";
+    }
+  }, 2500);
+}
+
+player.addEventListener("mousemove", showControls);
+player.addEventListener("touchstart", showControls);
+showControls();
+</script>
+
+```
