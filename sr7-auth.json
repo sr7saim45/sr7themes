@@ -1,0 +1,41 @@
+{
+  "_readme": "SR7 PREMIUM VIDEO PLAYER — DOMAIN AUTH DATA v2.1",
+  "_instructions": [
+    "1. Upload this file to a PUBLIC GitHub repo at any path you like.",
+    "2. Get the raw URL: open the file on GitHub, click 'Raw', copy the URL.",
+    "3. Convert that raw URL to char codes and paste into FILE-2 _au array.",
+    "   Use: node -e \"var u='YOUR_RAW_URL';console.log(u.split('').map(c=>c.charCodeAt(0)).join(','))\"",
+    "4. To add a domain: generate its token with the formula below, add entry to domains array.",
+    "5. To remove a domain: delete its object from domains array.",
+    "6. Commit and push — changes are live immediately. No theme edits needed.",
+    "",
+    "TOKEN FORMULA (JavaScript):",
+    "  var raw = domain + ':' + salt + ':sr7secured';",
+    "  var hash = 0;",
+    "  for (var i=0;i<raw.length;i++){hash=((hash<<5)-hash)+raw.charCodeAt(i);hash|=0;}",
+    "  var token = Math.abs(hash).toString(36);",
+    "",
+    "SALT: NEVER change the salt value after first publish. Changing it invalidates ALL tokens.",
+    "DOMAIN FORMAT: lowercase, no www prefix, no trailing slash. e.g. 'example.com'"
+  ],
+
+  "salt": "sr7p-2026-X9kLmZ",
+
+  "domains": [
+    {
+      "_note": "Your own admin Blogger domain — already bypassed in JS but listed for completeness",
+      "d": "homzure.blogspot.com",
+      "t": "rxop27"
+    },
+    {
+      "_note": "Your main theme site",
+      "d": "sr7themes.eu.org",
+      "t": "qkrww2"
+    },
+    {
+      "_note": "EXAMPLE — replace with real customer domain and regenerated token",
+      "d": "customer-site.blogspot.com",
+      "t": "GENERATE_WITH_FORMULA_ABOVE"
+    }
+  ]
+}
