@@ -1,1119 +1,1035 @@
-In this code how can I make the border of the player round <div class="sr7-player" id="sr7Player">
+<!-- ════════════════════════════════════════════════════════════════
+     SR7Themes — Login Page
+     Plus UI compatible · Inclusive Sans · Firebase Authentication
+     Paste this entire block into a Blogger HTML Page.
+════════════════════════════════════════════════════════════════ -->
 
-  <!-- Ad Layer -->
-  <div class="sr7-ad-layer" id="sr7AdLayer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital@0;1&display=swap" rel="stylesheet">
 
-    <video
-      id="sr7AdVideo"
-      muted
-      playsinline
-      preload="metadata"
-      controlslist="nodownload"
-      disablepictureinpicture
-    ></video>
+<style>
+/* ════════════════════════════════════════════════════════════════
+   1. DESIGN TOKENS — pulls Plus UI's real theme color (--linkB) so
+      buttons always match the active theme, with a complete dark
+      override block so dark mode is correct even if the underlying
+      Plus UI variables don't flip automatically.
+════════════════════════════════════════════════════════════════ */
+.sr7-auth-scope {
+  --sr7-bg:            var(--background, #ffffff);
+  --sr7-surface:       var(--card-background, #ffffff);
+  --sr7-surface-2:     var(--input-background, #f5f5f7);
+  --sr7-border:        var(--border-color, #e3e3e8);
+  --sr7-border-strong: var(--border-color-strong, #cfcfd8);
+  --sr7-text:          var(--text-color, #14141a);
+  --sr7-text-muted:    var(--text-color-secondary, #6b6b76);
+  --sr7-text-subtle:   var(--text-color-tertiary, #9c9ca6);
+  --sr7-accent:        var(--linkB, #4f46e5);
+  --sr7-accent-hover:  color-mix(in srgb, var(--sr7-accent) 85%, black);
+  --sr7-accent-soft:   color-mix(in srgb, var(--sr7-accent) 12%, transparent);
+  --sr7-danger:        #dc2626;
+  --sr7-danger-soft:   #fef2f2;
+  --sr7-success:       #16a34a;
+  --sr7-success-soft:  #f0fdf4;
+  --sr7-shadow-sm:     0 1px 2px rgba(20,20,26,0.04);
+  --sr7-shadow-card:   0 1px 3px rgba(20,20,26,0.06), 0 12px 32px rgba(20,20,26,0.06);
+  --sr7-radius-card:   20px;
+  --sr7-radius-input:  12px;
+  --sr7-radius-btn:    12px;
+  --sr7-font:          'Inclusive Sans', system-ui, -apple-system, sans-serif;
+}
 
-    <div class="sr7-ad-overlay">
+/* Dark mode — Plus UI applies a ".drK" class to the root/body.
+   Every token is explicitly redefined here (not just the accent) so
+   dark mode is correct regardless of whether Plus UI's own variables
+   change automatically. */
+.drK .sr7-auth-scope,
+.drK.sr7-auth-scope {
+  --sr7-bg:            var(--background, #0e0e11);
+  --sr7-surface:       var(--card-background, #17171b);
+  --sr7-surface-2:     var(--input-background, #1f1f24);
+  --sr7-border:        var(--border-color, #2a2a30);
+  --sr7-border-strong: var(--border-color-strong, #3a3a42);
+  --sr7-text:          var(--text-color, #f2f2f4);
+  --sr7-text-muted:    var(--text-color-secondary, #a3a3ad);
+  --sr7-text-subtle:   var(--text-color-tertiary, #6e6e78);
+  --sr7-accent:        var(--linkB, #6366f1);
+  --sr7-accent-hover:  color-mix(in srgb, var(--sr7-accent) 80%, white);
+  --sr7-accent-soft:   color-mix(in srgb, var(--sr7-accent) 16%, transparent);
+  --sr7-danger:        #f87171;
+  --sr7-danger-soft:   rgba(248,113,113,0.1);
+  --sr7-success:       #4ade80;
+  --sr7-success-soft:  rgba(74,222,128,0.1);
+  --sr7-shadow-card:   0 1px 3px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+}
 
-      <div class="sr7-ad-label">
-        Advertisement
+/* ════════════════════════════════════════════════════════════════
+   2. RESET — scoped only to our blocks, never touches Plus UI
+════════════════════════════════════════════════════════════════ */
+.sr7-auth-scope, .sr7-auth-scope * {
+  box-sizing: border-box;
+}
+.sr7-auth-scope {
+  font-family: var(--sr7-font);
+  color: var(--sr7-text);
+}
+.sr7-auth-scope h1, .sr7-auth-scope h2, .sr7-auth-scope p,
+.sr7-auth-scope button, .sr7-auth-scope input, .sr7-auth-scope label {
+  margin: 0;
+  font-family: var(--sr7-font);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   3. LAYOUT — no background forced, inherits page/Plus UI background
+════════════════════════════════════════════════════════════════ */
+.sr7-auth-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 16px;
+}
+
+.sr7-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 32px;
+  text-decoration: none;
+}
+
+.sr7-brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.sr7-brand-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--sr7-text);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   4. CARD
+════════════════════════════════════════════════════════════════ */
+.sr7-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--sr7-surface);
+  border: 1px solid var(--sr7-border);
+  border-radius: var(--sr7-radius-card);
+  box-shadow: var(--sr7-shadow-card);
+  padding: 36px 30px;
+  animation: sr7-card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes sr7-card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sr7-card-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 1.25;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.sr7-card-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--sr7-text-muted);
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 28px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   5. BUTTONS — unified height, consistent radius/typography
+════════════════════════════════════════════════════════════════ */
+.sr7-btn {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-radius: var(--sr7-radius-btn);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease,
+              box-shadow 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.sr7-btn:active { transform: scale(0.985); }
+.sr7-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.sr7-btn-google {
+  background: var(--sr7-surface-2);
+  border-color: var(--sr7-border);
+  color: var(--sr7-text);
+}
+.sr7-btn-google:hover:not(:disabled) {
+  border-color: var(--sr7-border-strong);
+  box-shadow: var(--sr7-shadow-sm);
+}
+
+/* Text is a fixed white rather than a theme variable — Plus UI's
+   accent color is meant to be a solid, fairly saturated brand color,
+   so white always gives reliable contrast against it. */
+.sr7-btn-primary {
+  background: var(--sr7-accent);
+  border-color: var(--sr7-accent);
+  color: #fff;
+}
+.sr7-btn-primary:hover:not(:disabled) { background: var(--sr7-accent-hover); }
+
+.sr7-btn svg { flex-shrink: 0; }
+
+/* ════════════════════════════════════════════════════════════════
+   6. DIVIDER
+════════════════════════════════════════════════════════════════ */
+.sr7-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--sr7-text-subtle);
+}
+.sr7-divider::before, .sr7-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--sr7-border);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   7. TABS — fixed centering, consistent height
+════════════════════════════════════════════════════════════════ */
+.sr7-tabs {
+  display: flex;
+  background: var(--sr7-surface-2);
+  border: 1px solid var(--sr7-border);
+  border-radius: var(--sr7-radius-btn);
+  padding: 3px;
+  margin-bottom: 26px;
+  gap: 3px;
+}
+.sr7-tab {
+  flex: 1;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sr7-text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  line-height: 1;
+}
+.sr7-tab.active {
+  background: var(--sr7-surface);
+  color: var(--sr7-accent);
+  box-shadow: var(--sr7-shadow-sm);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   8. FORM FIELDS
+════════════════════════════════════════════════════════════════ */
+.sr7-field { margin-bottom: 18px; }
+.sr7-field:last-of-type { margin-bottom: 0; }
+
+.sr7-label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sr7-text);
+  margin-bottom: 8px;
+}
+
+.sr7-input-wrap { position: relative; }
+
+.sr7-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  background: var(--sr7-surface-2);
+  border: 1.5px solid var(--sr7-border);
+  border-radius: var(--sr7-radius-input);
+  color: var(--sr7-text);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.sr7-input.has-toggle { padding-right: 46px; }
+
+.sr7-input::placeholder { color: var(--sr7-text-subtle); }
+
+.sr7-input:focus {
+  border-color: var(--sr7-accent);
+  box-shadow: 0 0 0 3.5px var(--sr7-accent-soft);
+}
+
+.sr7-input.is-error {
+  border-color: var(--sr7-danger);
+  box-shadow: 0 0 0 3.5px var(--sr7-danger-soft);
+}
+
+/* Password show/hide toggle — outlined "line" style icon */
+.sr7-toggle-pass {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--sr7-text-subtle);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.sr7-toggle-pass:hover { color: var(--sr7-text-muted); background: var(--sr7-border); }
+.sr7-toggle-pass svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sr7-toggle-pass .icon-off { display: none; }
+.sr7-toggle-pass.is-visible .icon-on  { display: none; }
+.sr7-toggle-pass.is-visible .icon-off { display: block; }
+
+.sr7-hint {
+  margin-top: 7px;
+  font-size: 12.5px;
+  color: var(--sr7-text-muted);
+  line-height: 1.45;
+}
+
+.sr7-error {
+  margin-top: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--sr7-danger);
+  display: none;
+  align-items: flex-start;
+  gap: 5px;
+  line-height: 1.4;
+}
+.sr7-error.show { display: flex; }
+
+/* ════════════════════════════════════════════════════════════════
+   9. LINKS / ROWS
+════════════════════════════════════════════════════════════════ */
+.sr7-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.sr7-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sr7-accent);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.sr7-link:hover { text-decoration: underline; }
+
+.sr7-link-row {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 13.5px;
+  color: var(--sr7-text-muted);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   10. SPINNER
+════════════════════════════════════════════════════════════════ */
+.sr7-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sr7-spin 0.65s linear infinite;
+  display: none;
+  flex-shrink: 0;
+}
+.sr7-btn-google .sr7-spinner {
+  border: 2.5px solid var(--sr7-border-strong);
+  border-top-color: var(--sr7-text-muted);
+}
+.sr7-spinner.show { display: block; }
+@keyframes sr7-spin { to { transform: rotate(360deg); } }
+
+/* ════════════════════════════════════════════════════════════════
+   11. TOAST — colored surface per type + icon
+════════════════════════════════════════════════════════════════ */
+.sr7-toast {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  max-width: min(380px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--sr7-surface);
+  border: 1.5px solid var(--sr7-border);
+  color: var(--sr7-text);
+  font-family: var(--sr7-font);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 13px 18px;
+  border-radius: 14px;
+  box-shadow: var(--sr7-shadow-card);
+  opacity: 0;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  pointer-events: none;
+  z-index: 9999;
+  text-align: left;
+}
+.sr7-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.sr7-toast-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sr7-toast-msg { line-height: 1.4; }
+.sr7-toast.error {
+  color: var(--sr7-danger);
+  background: var(--sr7-danger-soft);
+  border-color: var(--sr7-danger);
+}
+.sr7-toast.success {
+  color: var(--sr7-success);
+  background: var(--sr7-success-soft);
+  border-color: var(--sr7-success);
+}
+.sr7-toast.success .sr7-toast-msg,
+.sr7-toast.error .sr7-toast-msg { color: var(--sr7-text); font-weight: 500; }
+
+/* ════════════════════════════════════════════════════════════════
+   12. FOOTER
+════════════════════════════════════════════════════════════════ */
+.sr7-footer {
+  margin-top: 28px;
+  font-size: 12.5px;
+  color: var(--sr7-text-subtle);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 340px;
+}
+.sr7-footer a {
+  color: var(--sr7-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   13. RESPONSIVE — mobile-first refinements
+════════════════════════════════════════════════════════════════ */
+@media (max-width: 420px) {
+  .sr7-auth-wrap { padding: 28px 14px; }
+  .sr7-card { padding: 28px 20px; border-radius: 18px; }
+  .sr7-card-title { font-size: 21px; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .sr7-spinner { animation: none; }
+  .sr7-btn, .sr7-input, .sr7-tab, .sr7-toast, .sr7-card { transition: none; animation: none; }
+}
+
+/* Focus visibility for accessibility */
+.sr7-auth-scope :focus-visible {
+  outline: 2px solid var(--sr7-accent);
+  outline-offset: 2px;
+}
+</style>
+
+<div class="sr7-auth-scope">
+  <div class="sr7-auth-wrap">
+
+    <!-- Brand -->
+    <a class="sr7-brand" href="https://www.sr7themes.in/" aria-label="SR7Themes home">
+      <img
+        class="sr7-brand-logo"
+        src="https://raw.githubusercontent.com/sr7saim45/sr7themes/refs/heads/main/ChatGPT%20Image%20Jun%2024%2C%202026%20at%2011_52_02%20PM.svg"
+        alt="SR7Themes logo"
+        onerror="this.style.display='none'"
+      />
+      <span class="sr7-brand-name">SR7Themes</span>
+    </a>
+
+    <!-- Card -->
+    <div class="sr7-card">
+
+      <h1 class="sr7-card-title">Welcome back</h1>
+      <p class="sr7-card-subtitle" id="sr7Subtitle">Sign in to continue to your account</p>
+<br/>
+      <!-- Google Sign-In -->
+      <button class="sr7-btn sr7-btn-google" id="sr7GoogleBtn" type="button">
+        <div class="sr7-spinner" id="sr7GoogleSpinner"></div>
+        <svg id="sr7GoogleIcon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+         <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" fill="currentColor"></path>
+        </svg>
+        <span id="sr7GoogleBtnText">Continue with Google</span>
+      </button>
+
+      <div class="sr7-divider">or continue with email</div>
+
+      <!-- Tabs: Login / Sign up -->
+      <div class="sr7-tabs" role="tablist">
+        <button class="sr7-tab active" id="sr7TabLogin" role="tab" aria-selected="true" onclick="sr7SwitchTab('login')">Sign in</button>
+        <button class="sr7-tab" id="sr7TabSignup" role="tab" aria-selected="false" onclick="sr7SwitchTab('signup')">Create account</button>
       </div>
 
-      <div class="sr7-ad-actions">
-
-        <div class="sr7-ad-countdown" id="sr7AdCountdown">
-          Ad: 0:00
+      <!-- ── LOGIN FORM ── -->
+      <form id="sr7LoginForm" onsubmit="return false;">
+        <div class="sr7-field">
+          <label class="sr7-label" for="sr7LoginEmail">Email address</label>
+          <input class="sr7-input" type="email" id="sr7LoginEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
+          <div class="sr7-error" id="sr7LoginEmailErr"></div>
         </div>
 
-        <button id="sr7SkipAd" class="sr7-skip-ad" disabled>
-          Skip Ad (5)
+        <div class="sr7-field">
+          <div class="sr7-row-between">
+            <label class="sr7-label" for="sr7LoginPassword" style="margin-bottom:0;">Password</label>
+            <button type="button" class="sr7-link" onclick="sr7ShowForgot()">Forgot password?</button>
+          </div>
+          <div class="sr7-input-wrap">
+            <input class="sr7-input has-toggle" type="password" id="sr7LoginPassword" placeholder="Enter your password" autocomplete="current-password">
+            <button type="button" class="sr7-toggle-pass" id="sr7LoginPassToggle" aria-label="Show password" onclick="sr7TogglePassword('sr7LoginPassword', this)">
+              <svg class="icon-on" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+          <div class="sr7-error" id="sr7LoginPassErr"></div>
+        </div>
+
+        <button class="sr7-btn sr7-btn-primary" id="sr7LoginBtn" type="submit" style="margin-top:8px;" onclick="sr7HandleLogin()">
+          <div class="sr7-spinner" id="sr7LoginSpinner"></div>
+          <span id="sr7LoginBtnText">Sign in</span>
+        </button>
+      </form>
+
+      <!-- ── SIGNUP FORM ── -->
+      <form id="sr7SignupForm" style="display:none;" onsubmit="return false;">
+        <div class="sr7-field">
+          <label class="sr7-label" for="sr7SignupName">Full name</label>
+          <input class="sr7-input" type="text" id="sr7SignupName" placeholder="Your name" autocomplete="name">
+          <div class="sr7-error" id="sr7SignupNameErr"></div>
+        </div>
+
+        <div class="sr7-field">
+          <label class="sr7-label" for="sr7SignupEmail">Email address</label>
+          <input class="sr7-input" type="email" id="sr7SignupEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
+          <div class="sr7-error" id="sr7SignupEmailErr"></div>
+        </div>
+
+        <div class="sr7-field">
+          <label class="sr7-label" for="sr7SignupPassword">Password</label>
+          <div class="sr7-input-wrap">
+            <input class="sr7-input has-toggle" type="password" id="sr7SignupPassword" placeholder="Create a password" autocomplete="new-password">
+            <button type="button" class="sr7-toggle-pass" id="sr7SignupPassToggle" aria-label="Show password" onclick="sr7TogglePassword('sr7SignupPassword', this)">
+              <svg class="icon-on" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+          <div class="sr7-hint">Use at least 8 characters.</div>
+          <div class="sr7-error" id="sr7SignupPassErr"></div>
+        </div>
+
+        <button class="sr7-btn sr7-btn-primary" id="sr7SignupBtn" type="submit" style="margin-top:8px;" onclick="sr7HandleSignup()">
+          <div class="sr7-spinner" id="sr7SignupSpinner"></div>
+          <span id="sr7SignupBtnText">Create account</span>
+        </button>
+      </form>
+
+      <!-- ── FORGOT PASSWORD FORM ── -->
+      <form id="sr7ForgotForm" style="display:none;" onsubmit="return false;">
+        <div class="sr7-field">
+          <label class="sr7-label" for="sr7ResetEmail">Email address</label>
+          <input class="sr7-input" type="email" id="sr7ResetEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
+          <div class="sr7-hint">We'll send a password reset link to this address.</div>
+          <div class="sr7-error" id="sr7ResetEmailErr"></div>
+        </div>
+
+        <button class="sr7-btn sr7-btn-primary" id="sr7ResetBtn" type="submit" onclick="sr7HandlePasswordReset()">
+          <div class="sr7-spinner" id="sr7ResetSpinner"></div>
+          <span id="sr7ResetBtnText">Send reset link</span>
         </button>
 
-      </div>
+        <div class="sr7-link-row">
+          <button type="button" class="sr7-link" onclick="sr7BackToLogin()">&larr; Back to sign in</button>
+        </div>
+      </form>
 
-    </div>
+    </div><!-- /card -->
 
-  </div>
-
-  <!-- Main Video -->
-  <video
-    id="sr7Video"
-    class="sr7-video"
-    playsinline
-    preload="metadata"
-    controlslist="nodownload"
-    disablepictureinpicture
-    oncontextmenu="return false;"
-    poster="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjqIlcuXKdIxk1hck_QZCiq5FaAl6ogvmhLfRPynZRGzXtl0ZdAU-qA_-HmBxD1rMNSGfi-XziQQeCSljf2ONLau3XOdHHehBAbcNthoot0neux5OuxHGhb_1huH9nj6I8QDVsUdQ7CrofvKqSphF4cbLobmx4_nELpLeZvWpSMh908SrgW_7-frcAf/w600-h337-p-k-no-nu-rw-e90/ignite.png"
-  ></video>
-
- 
-  <!-- Center Controls -->
-  <div class="sr7-center-controls" id="sr7CenterControls">
-
-    <!-- Backward -->
-    <button class="sr7-control-btn" id="sr7Back">
-
-      <svg class='line' viewBox='0 0 24 24'>
-        <path d='M9.54004 15.92V10.5801L8.04004 12.2501'></path>
-        <path d='M10.02 4.46997L12 2'></path>
-        <path d='M4.91 7.79999C3.8 9.27999 3.10999 11.11 3.10999 13.11C3.10999 18.02 7.09 22 12 22C16.91 22 20.89 18.02 20.89 13.11C20.89 8.19999 16.91 4.21997 12 4.21997C11.32 4.21997 10.66 4.31002 10.02 4.46002'></path>
-        <path d='M14 10.5801C15.1 10.5801 16 11.4801 16 12.5801V13.9301C16 15.0301 15.1 15.9301 14 15.9301C12.9 15.9301 12 15.0301 12 13.9301V12.5801C12 11.4701 12.9 10.5801 14 10.5801Z'></path>
-      </svg>
-
-    </button>
-
-    <!-- Play Pause -->
-    <button class="sr7-control-btn sr7-play-btn" id="sr7PlayPause">
-
-      <span id="sr7PlayIcon">
-
-        <svg class='line' viewBox='0 0 24 24'>
-          <path d='M4 11.9999V8.43989C4 4.01989 7.13 2.2099 10.96 4.4199L14.05 6.1999L17.14 7.9799C20.97 10.1899 20.97 13.8099 17.14 16.0199L14.05 17.7999L10.96 19.5799C7.13 21.7899 4 19.9799 4 15.5599V11.9999Z'></path>
-        </svg>
-
-      </span>
-
-    </button>
-
-    <!-- Forward -->
-    <button class="sr7-control-btn" id="sr7Forward">
-
-      <svg class='line' viewBox='0 0 24 24'>
-        <path d='M13.98 4.46997L12 2'></path>
-        <path d='M19.0899 7.79999C20.1999 9.27999 20.8899 11.11 20.8899 13.11C20.8899 18.02 16.9099 22 11.9999 22C7.08988 22 3.10986 18.02 3.10986 13.11C3.10986 8.19999 7.08988 4.21997 11.9999 4.21997C12.6799 4.21997 13.3399 4.31002 13.9799 4.46002'></path>
-        <path d='M9.54004 15.92V10.5801L8.04004 12.2501'></path>
-        <path d='M14 10.5801C15.1 10.5801 16 11.4801 16 12.5801V13.9301C16 15.0301 15.1 15.9301 14 15.9301C12.9 15.9301 12 15.0301 12 13.9301V12.5801C12 11.4701 12.9 10.5801 14 10.5801Z'></path>
-      </svg>
-
-    </button>
+    <!-- Footer -->
+    <p class="sr7-footer">
+      By continuing, you agree to SR7Themes'
+      <a href="https://www.sr7themes.eu.org/p/privacy-policy.html">Privacy Policy</a> and
+      <a href="https://www.sr7themes.eu.org/p/terms-of-service.html">Terms of Service</a>.
+    </p>
 
   </div>
-
-  <!-- Bottom Controls -->
-  <div class="sr7-bottom-controls" id="sr7BottomControls">
-
-    <div class="sr7-progress-wrap">
-
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value="0"
-        id="sr7Progress"
-      >
-
-    </div>
-
-    <div class="sr7-controls-row">
-
-      <div class="sr7-time">
-        <span id="sr7CurrentTime">0:00</span>
-        /
-        <span id="sr7Duration">0:00</span>
-      </div>
-
-      <div class="sr7-right-controls">
-
-        <select id="sr7Speed">
-          <option value="0.5">0.5x</option>
-          <option value="0.75">0.75x</option>
-          <option value="1" selected>1x</option>
-          <option value="1.25">1.25x</option>
-          <option value="1.5">1.5x</option>
-          <option value="2">2x</option>
-        </select>
-        
-        <div class="sr7-quality">
-
-  <button id="sr7QualityBtn" class="sr7-control-btn sr7-quality-btn">
-<svg class='line' viewBox='0 0 24 24'><path d='M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z' stroke-miterlimit='10'></path><path d='M2 12.8799V11.1199C2 10.0799 2.85 9.21994 3.9 9.21994C5.71 9.21994 6.45 7.93994 5.54 6.36994C5.02 5.46994 5.33 4.29994 6.24 3.77994L7.97 2.78994C8.76 2.31994 9.78 2.59994 10.25 3.38994L10.36 3.57994C11.26 5.14994 12.74 5.14994 13.65 3.57994L13.76 3.38994C14.23 2.59994 15.25 2.31994 16.04 2.78994L17.77 3.77994C18.68 4.29994 18.99 5.46994 18.47 6.36994C17.56 7.93994 18.3 9.21994 20.11 9.21994C21.15 9.21994 22.01 10.0699 22.01 11.1199V12.8799C22.01 13.9199 21.16 14.7799 20.11 14.7799C18.3 14.7799 17.56 16.0599 18.47 17.6299C18.99 18.5399 18.68 19.6999 17.77 20.2199L16.04 21.2099C15.25 21.6799 14.23 21.3999 13.76 20.6099L13.65 20.4199C12.75 18.8499 11.27 18.8499 10.36 20.4199L10.25 20.6099C9.78 21.3999 8.76 21.6799 7.97 21.2099L6.24 20.2199C5.33 19.6999 5.02 18.5299 5.54 17.6299C6.45 16.0599 5.71 14.7799 3.9 14.7799C2.85 14.7799 2 13.9199 2 12.8799Z' stroke-miterlimit='10'></path></svg>
-         
-
-  </button>
-
-  <div class="sr7-quality-menu" id="sr7QualityMenu">
-
-    <button data-quality="1080">1080p</button>
-    <button data-quality="720">720p</button>
-    <button data-quality="480">480p</button>
-    <button data-quality="360">360p</button>
-
-  </div>
-
 </div>
 
-        <button id="sr7Fullscreen" class="sr7-control-btn">
+<div class="sr7-toast" id="sr7Toast"></div>
 
-          <span id="sr7FullscreenIcon">
+<!-- ════════════════════════════════════════════════════════════════
+     FIREBASE SDK — modular compat build (works inside Blogger)
+════════════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
-            <svg class='line' viewBox='0 0 24 24'>
-              <path d='M2 9V6.5C2 4.01 4.01 2 6.5 2H9'></path>
-              <path d='M15 2H17.5C19.99 2 22 4.01 22 6.5V9'></path>
-              <path d='M22 16V17.5C22 19.99 19.99 22 17.5 22H16'></path>
-              <path d='M9 22H6.5C4.01 22 2 19.99 2 17.5V15'></path>
-            </svg>
+<script>
+(function () {
+  'use strict';
 
-          </span>
+  /* ════════════════════════════════════════════════════════════
+     1. CONFIG
+  ════════════════════════════════════════════════════════════ */
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDhmyE8KMJ3kPv-lqqPaJPs-dhGT_khvnI",
+    authDomain:        "sr7themes-auth.firebaseapp.com",
+    projectId:         "sr7themes-auth",
+    storageBucket:     "sr7themes-auth.firebasestorage.app",
+    messagingSenderId: "1002371493022",
+    appId:             "1:1002371493022:web:dafdea91424f7cadf01f8f"
+  };
 
-        </button>
+  const DASHBOARD_URL = "https://www.sr7themes.eu.org/p/dashboard.html";
 
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- Resume Toast -->
-  <div id="sr7ResumeToast" class="sr7-resume-toast">
-    Resuming from where you left off...
-  </div>
-
-</div>
-
-<style>:root{
-  --sr7-main:#0b8877;
-  --sr7-secondary:#57717d;
-  --sr7-ad:#ffcc00;
-  --sr7-bg:#ffffff;
-  --sr7-dark:#161b1f;
-  --sr7-border:#e6edf3;
-}
-
-
-.sr7-player{
-  position:relative;
-  width:100%;
-  max-width:1000px;
-  margin:30px auto;
-  border-radius:20px;
-  overflow:hidden;
-  background:#000;
-  isolation:isolate;
-}
-
-
-.sr7-video,
-#sr7AdVideo{
-  width:100%;
-  display:block;
-  aspect-ratio:16/9;
-  background:#000;
-  -webkit-user-select:none;
-  user-select:none;
-  -webkit-touch-callout:none;
-}
-
-.sr7-ad-layer{
-  position:absolute;
-  inset:0;
-  z-index:20;
-  background:#000;
-}
-
-.sr7-ad-overlay{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.sr7-ad-label{
-  font-size:12px;
-  font-weight:600;
-  color:#000;
-  background:var(--sr7-ad);
-  padding:6px 10px;
-  border-radius:999px;
-}
-
-.sr7-skip-ad{
-  border:none;
-  background:#111;
-  color:#fff;
-  padding:10px 16px;
-  border-radius:999px;
-  cursor:pointer;
-  font-weight:600;
-  backdrop-filter:blur(10px);
-  box-shadow:0 4px 12px rgba(0,0,0,.25);
-}
-
-.sr7-skip-ad:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
-
-.sr7-center-controls{
-  position:absolute;
-  inset:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:30px;
-  z-index:15;
-  pointer-events:none;
-}
-
-.sr7-control-btn{
-  pointer-events:auto;
-  border:none;
-  background:rgba(0,0,0,.45);
-  backdrop-filter:blur(10px);
-  color:#fff;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  transition:.25s ease;
-}
-
-.sr7-play-btn{
-  width:72px;
-  height:72px;
-}
-
-.sr7-control-btn:hover{
-  transform:scale(1.08);
-  background:rgba(0,0,0,.65);
-}
-
-.sr7-control-btn svg{
-  width:24px;
-  height:24px;
-  stroke:#fff;
-  fill:none;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.sr7-play-btn svg{
-  width:30px;
-  height:30px;
-}
-
-.sr7-bottom-controls{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  padding:14px;
-  background:linear-gradient(
-    to top,
-    rgba(0,0,0,.85),
-    rgba(0,0,0,.35),
-    transparent
-  );
-  z-index:16;
-}
-
-.sr7-progress-wrap{
-  margin-bottom:10px;
-}
-
-#sr7Progress{
-  width:100%;
-  cursor:pointer;
-  accent-color:var(--sr7-main);
-}
-
-.sr7-player.adPlaying #sr7Progress{
-  accent-color:var(--sr7-ad);
-}
-
-.sr7-controls-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.sr7-time{
-  color:#fff;
-  font-size:13px;
-  font-weight:500;
-}
-
-.sr7-right-controls{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-#sr7Speed{
-  border:none;
-  outline:none;
-  background:rgba(255,255,255,.12);
-  color:#fff;
-  padding:8px 10px;
-  border-radius:10px;
-  backdrop-filter:blur(10px);
-  cursor:pointer;
-}
-
-#sr7Speed option{
-  color:#000;
-}
-
-#sr7Fullscreen{
-  width:42px;
-  height:42px;
-}
-
-.sr7-hidden{
-  opacity:0;
-  pointer-events:none;
-  transition:.25s ease;
-}
-
-.drK .sr7-player{
-  background:#000;
-}
-
-.drK #sr7Speed{
-  background:rgba(255,255,255,.08);
-}
-
-.drK .sr7-skip-ad{
-  background:#000;
-  color:#fff;
-}
-  
-.sr7-resume-toast{
-  position:absolute;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.85);
-  color:#fff;
-  padding:10px 16px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:600;
-  z-index:100;
-  opacity:0;
-  pointer-events:none;
-  transition:.3s ease;
-}
-
-.sr7-resume-toast.show{
-  opacity:1;
-}  
-
-@media(max-width:768px){
-
-  .sr7-center-controls{
-    gap:18px;
+  if (!window.firebase.apps.length) {
+    window.firebase.initializeApp(firebaseConfig);
   }
+  const auth = firebase.auth();
 
-  .sr7-control-btn{
-    width:48px;
-    height:48px;
-  }
-
-  .sr7-play-btn{
-    width:62px;
-    height:62px;
-  }
-
-  .sr7-control-btn svg{
-    width:20px;
-    height:20px;
-  }
-
-  .sr7-play-btn svg{
-    width:26px;
-    height:26px;
-  }
-
-  .sr7-controls-row{
-    gap:10px;
-  }
-
-  .sr7-time{
-    font-size:12px;
-  }
-
-  .sr7-quality{
-    position:relative;
-}
-
-.sr7-quality-btn{
-    width:42px;
-    height:42px;
-}
-
-.sr7-quality-menu{
-    position:absolute;
-    right:0;
-    bottom:55px;
-    background:rgba(22,27,31,.96);
-    border-radius:12px;
-    min-width:110px;
-    overflow:hidden;
-    display:none;
-    backdrop-filter:blur(12px);
-    box-shadow:0 10px 25px rgba(0,0,0,.3);
-}
-
-.sr7-quality-menu.show{
-    display:block;
-}
-
-.sr7-quality-menu button{
-    width:100%;
-    border:none;
-    background:transparent;
-    color:#fff;
-    padding:10px 15px;
-    text-align:left;
-    cursor:pointer;
-    font-size:13px;
-}
-
-.sr7-quality-menu button:hover{
-    background:rgba(255,255,255,.08);
-}
-  
-  #sr7Speed{
-    font-size:12px;
-    padding:6px 8px;
-  }
-
-}</style>
-
-
-<script>const SR7_CONFIG = {
-
-  adVideoUrl: "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/vidssave.com%20Google%20AI%20Pro%20-%20YouTube%20Premium%20Lite%20Bundle%20720P.mp4",
-
-  mainVideoUrl: "https://github.com/sr7saim45/sr7themes/raw/refs/heads/main/222.mp4",
-
-  skipAfter: 5
-
-};
-  
-const VIDEO_SOURCES = {
-
-    "1080":"video1080.mp4",
-
-    "720":"video720.mp4",
-
-    "480":"video480.mp4",
-
-    "360":"video360.mp4"
-
-};  
-  
-  document
-.querySelectorAll("#sr7QualityMenu button")
-.forEach(btn=>{
-
-    btn.onclick = ()=>{
-
-        const time = video.currentTime;
-
-        const paused = video.paused;
-
-        video.src =
-        VIDEO_SOURCES[btn.dataset.quality];
-
-        video.load();
-
-        video.onloadedmetadata = ()=>{
-
-            video.currentTime = time;
-
-            if(!paused)
-                video.play();
-
-        };
-
-        qualityMenu.classList.remove("show");
-
-    };
-
-});
-  
-  document.addEventListener("click",e=>{
-
-    if(!e.target.closest(".sr7-quality")){
-
-        qualityMenu.classList.remove("show");
-
-    }
-
-});
-  
-  const qualityBtn =
-document.getElementById("sr7QualityBtn");
-
-const qualityMenu =
-document.getElementById("sr7QualityMenu");
-
-qualityBtn.onclick = ()=>{
-
-    qualityMenu.classList.toggle("show");
-
-};
-
-const player = document.getElementById("sr7Player");
-
-const video = document.getElementById("sr7Video");
-const adVideo = document.getElementById("sr7AdVideo");
-
-const adLayer = document.getElementById("sr7AdLayer");
-
-const skipBtn = document.getElementById("sr7SkipAd");
-  
-const adCountdown = document.getElementById("sr7AdCountdown");  
-
-const playBtn = document.getElementById("sr7PlayPause");
-const backBtn = document.getElementById("sr7Back");
-const forwardBtn = document.getElementById("sr7Forward");
-
-const progress = document.getElementById("sr7Progress");
-
-const currentTimeEl = document.getElementById("sr7CurrentTime");
-const durationEl = document.getElementById("sr7Duration");
-
-const speedSelect = document.getElementById("sr7Speed");
-
-const fullscreenBtn = document.getElementById("sr7Fullscreen");
-
-const centerControls = document.getElementById("sr7CenterControls");
-const bottomControls = document.getElementById("sr7BottomControls");
-
-let controlsTimeout;
-
-let adPlaying = true;
-
-let skipCountdown = SR7_CONFIG.skipAfter;
-  
-const STORAGE_KEY =
-  "sr7-progress-" +
-  btoa(SR7_CONFIG.mainVideoUrl);  
-
-
-
-/* --------------------------
-   PLAY / PAUSE ICONS
--------------------------- */
-
-const playSVG = `
-<svg class='line' viewBox='0 0 24 24'><path d='M4 11.9999V8.43989C4 4.01989 7.13 2.2099 10.96 4.4199L14.05 6.1999L17.14 7.9799C20.97 10.1899 20.97 13.8099 17.14 16.0199L14.05 17.7999L10.96 19.5799C7.13 21.7899 4 19.9799 4 15.5599V11.9999Z' stroke-miterlimit='10'></path></svg>
-`;
-
-const pauseSVG = `
-<svg class='line' viewBox='0 0 24 24'>
-<path d='M10.65 19.11V4.89C10.65 3.54 10.08 3 8.64 3H5.01C3.57 3 3 3.54 3 4.89V19.11C3 20.46 3.57 21 5.01 21H8.64C10.08 21 10.65 20.46 10.65 19.11Z'></path>
-<path d='M21 19.11V4.89C21 3.54 20.43 3 18.99 3H15.36C13.93 3 13.35 3.54 13.35 4.89V19.11C13.35 20.46 13.92 21 15.36 21H18.99C20.43 21 21 20.46 21 19.11Z'></path>
-</svg>
-`;
-
-
-
-/* --------------------------
-   LOAD VIDEOS
--------------------------- */
-
-video.src = SR7_CONFIG.mainVideoUrl;
-
-adVideo.src = SR7_CONFIG.adVideoUrl;
-
-player.classList.add("adPlaying");
-
-
-
-/* --------------------------
-   START AD
--------------------------- */
-
-adVideo.muted = true;
-
-adVideo.play().catch(err=>{
-  console.log(err);
-});
-
-let adTimer = setInterval(() => {
-
-  skipCountdown--;
-
-  if(skipCountdown > 0){
-
-    skipBtn.innerText =
-      "Skip Ad (" + skipCountdown + ")";
-
-  }else{
-
-    skipBtn.disabled = false;
-
-    skipBtn.innerText = "Skip Ad";
-
-    clearInterval(adTimer);
-
-  }
-
-},1000);
-
-
-
-/* --------------------------
-   END AD
--------------------------- */
-
-function startMainVideo(){
-
-  if(!adPlaying) return;
-
-  adPlaying = false;
-
-  player.classList.remove("adPlaying");
-
-  adVideo.pause();
-
-  adLayer.style.display = "none";
-
-  progress.value = 0;
-  
-  video.play();
-
-}
-
-skipBtn.addEventListener("click",startMainVideo);
-
-adVideo.addEventListener("ended",startMainVideo);
-
-
-
-/* --------------------------
-   PLAY / PAUSE
--------------------------- */
-
-playBtn.addEventListener("click",()=>{
-
-  if(adPlaying) return;
-
-  if(video.paused){
-
-    video.play();
-
-  }else{
-
-    video.pause();
-
-  }
-
-});
-
-video.addEventListener("play",()=>{
-
-  document.getElementById("sr7PlayIcon")
-    .innerHTML = pauseSVG;
-
-});
-
-video.addEventListener("pause",()=>{
-
-  document.getElementById("sr7PlayIcon")
-    .innerHTML = playSVG;
-
-});
-
-
-
-/* --------------------------
-   SKIP 10s
--------------------------- */
-
-backBtn.addEventListener("click",()=>{
-
-  if(adPlaying) return;
-
-  video.currentTime =
-    Math.max(0,video.currentTime - 10);
-
-});
-
-forwardBtn.addEventListener("click",()=>{
-
-  if(adPlaying) return;
-
-  video.currentTime =
-    Math.min(
-      video.duration,
-      video.currentTime + 10
-    );
-
-});
-
-
-
-/* --------------------------
-   SPEED
--------------------------- */
-
-speedSelect.addEventListener("change",()=>{
-
-  video.playbackRate =
-    parseFloat(speedSelect.value);
-
-});
-
-
-
-/* --------------------------
-   TIME FORMAT
--------------------------- */
-
-function formatTime(sec){
-
-  let minutes =
-    Math.floor(sec / 60);
-
-  let seconds =
-    Math.floor(sec % 60);
-
-  if(seconds < 10)
-    seconds = "0" + seconds;
-
-  return minutes + ":" + seconds;
-
-}
-
-
-
-/* --------------------------
-   UPDATE PROGRESS
--------------------------- */
-
-video.addEventListener("loadedmetadata",()=>{
-
-  durationEl.textContent =
-    formatTime(video.duration);
-
- const savedTime =
-  localStorage.getItem(STORAGE_KEY);
-
-if(
-  savedTime &&
-  parseFloat(savedTime) <
-  video.duration - 5
-){
-
-  video.currentTime =
-    parseFloat(savedTime);
-
-  const toast =
-    document.getElementById(
-      "sr7ResumeToast"
-    );
-
-  if(toast){
-
-    toast.classList.add("show");
-
-    setTimeout(()=>{
-
-      toast.classList.remove("show");
-
-    },2500);
-
-  }
-
-}
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function (err) {
+    console.warn('Persistence setup failed:', err.code);
   });
 
-video.addEventListener("timeupdate",()=>{
-
-  let percent =
-    (video.currentTime /
-     video.duration) * 100;
-
-  progress.value = percent;
-
-  currentTimeEl.textContent =
-    formatTime(video.currentTime);
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    video.currentTime
-  );
-
-});
-
-
-
-/* --------------------------
-   SEEK
--------------------------- */
-
-progress.addEventListener("input",()=>{
-
-  if(adPlaying) return;
-
-  video.currentTime =
-    (progress.value / 100)
-    * video.duration;
-
-});
-
-
-
-/* --------------------------
-   FULLSCREEN
--------------------------- */
-
-fullscreenBtn.addEventListener("click",async()=>{
-
-  if(!document.fullscreenElement){
-
-    await player.requestFullscreen();
-
-    if(screen.orientation){
-      screen.orientation
-        .lock("landscape")
-        .catch(()=>{});
-    }
-
-  }else{
-
-    document.exitFullscreen();
-
+  // If this page was reached as login.html?next=<url> (e.g. bounced
+  // here from checkout because the shopper wasn't signed in yet),
+  // send them back there after signing in instead of the dashboard.
+  // Only honored if it points back at our own domain.
+  function sr7GetRedirectTarget() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next');
+      if (next && /^https:\/\/(www\.)?sr7themes\.eu\.org\//i.test(next)) {
+        return next;
+      }
+    } catch (e) { /* fall through to default */ }
+    return DASHBOARD_URL;
   }
 
-});
+  function sr7RedirectToDashboard() {
+    window.location.href = sr7GetRedirectTarget();
+  }
 
+  /* ════════════════════════════════════════════════════════════
+     2. GOOGLE SIGN-IN — popup with automatic redirect fallback
+     ────────────────────────────────────────────────────────────
+     Tries popup first (best desktop UX), and falls back to a full
+     redirect automatically when popups are blocked/unreliable —
+     including a watchdog for cases where the popup call silently
+     never resolves at all (common in some mobile in-app browsers).
+  ════════════════════════════════════════════════════════════ */
+  const googleProvider = new firebase.auth.GoogleAuthProvider();
+  googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-/* --------------------------
-   AUTO HIDE CONTROLS
--------------------------- */
+  function sr7ShouldUseRedirect() {
+    try {
+      const ua = navigator.userAgent || '';
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+      const isInAppBrowser = /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Twitter/i.test(ua);
+      const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+      const isEmbedded = window.self !== window.top;
+      return !!(isMobile || isInAppBrowser || isStandalone || isEmbedded);
+    } catch (e) {
+      return true;
+    }
+  }
 
-function showControls(){
+  const POPUP_FALLBACK_CODES = [
+    'auth/popup-blocked',
+    'auth/operation-not-supported-in-this-environment',
+    'auth/cancelled-popup-request',
+    'auth/web-storage-unsupported',
+    'auth/internal-error',
+    'auth/timeout'
+  ];
 
-  centerControls.classList.remove(
-    "sr7-hidden"
-  );
+  function sr7GoogleSignIn() {
+    const btn = document.getElementById('sr7GoogleBtn');
+    const spinner = document.getElementById('sr7GoogleSpinner');
+    const icon = document.getElementById('sr7GoogleIcon');
+    const text = document.getElementById('sr7GoogleBtnText');
 
-  bottomControls.classList.remove(
-    "sr7-hidden"
-  );
+    btn.disabled = true;
+    spinner.classList.add('show');
+    icon.style.display = 'none';
+    text.textContent = 'Connecting...';
 
-  clearTimeout(controlsTimeout);
-
-  controlsTimeout = setTimeout(()=>{
-
-    if(!video.paused){
-
-      centerControls.classList.add(
-        "sr7-hidden"
-      );
-
-      bottomControls.classList.add(
-        "sr7-hidden"
-      );
-
+    function resetBtn() {
+      btn.disabled = false;
+      spinner.classList.remove('show');
+      icon.style.display = '';
+      text.textContent = 'Continue with Google';
     }
 
-  },3000);
+    function runRedirect() {
+      auth.signInWithRedirect(googleProvider).catch(function (err) {
+        resetBtn();
+        sr7Toast(sr7FriendlyError(err.code), 'error');
+      });
+    }
 
-}
+    if (sr7ShouldUseRedirect()) {
+      runRedirect();
+      return;
+    }
 
-player.addEventListener(
-  "mousemove",
-  showControls
-);
+    let settled = false;
+    const watchdog = setTimeout(function () {
+      if (!settled) {
+        settled = true;
+        runRedirect();
+      }
+    }, 8000);
 
-player.addEventListener(
-  "touchstart",
-  showControls
-);
-  
-video.addEventListener("ended",()=>{
-
-  localStorage.removeItem(
-    STORAGE_KEY
-  );
-
-});  
-  
-  adVideo.addEventListener("timeupdate",()=>{
-
-  const percent =
-    (adVideo.currentTime /
-     adVideo.duration) * 100;
-
-  progress.value = percent;
-
-});
-  
-adVideo.addEventListener(
-  "timeupdate",
-  ()=>{
-
-    if(!adCountdown) return;
-
-    const remain =
-      Math.max(
-        0,
-        adVideo.duration -
-        adVideo.currentTime
-      );
-
-    const mins =
-      Math.floor(remain/60);
-
-    let secs =
-      Math.floor(remain%60);
-
-    if(secs < 10)
-      secs = "0" + secs;
-
-    adCountdown.textContent =
-      "Ad: " +
-      mins +
-      ":" +
-      secs;
-
+    auth.signInWithPopup(googleProvider)
+      .then(function (result) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(watchdog);
+        sr7Toast('Signed in as ' + (result.user.displayName || result.user.email), 'success');
+        sr7RedirectToDashboard();
+      })
+      .catch(function (err) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(watchdog);
+        if (err.code === 'auth/popup-closed-by-user') {
+          resetBtn();
+          return;
+        }
+        if (POPUP_FALLBACK_CODES.indexOf(err.code) !== -1) {
+          runRedirect();
+          return;
+        }
+        resetBtn();
+        sr7Toast(sr7FriendlyError(err.code), 'error');
+      });
   }
-);  
 
-  showControls();</script>    id="sr7Video"
-    class="sr7-video"
-    playsinline
-    preload="metadata"
-    controlslist="nodownload"
-    disablepictureinpicture
-    oncontextmenu="return false;"
-    poster="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjqIlcuXKdIxk1hck_QZCiq5FaAl6ogvmhLfRPynZRGzXtl0ZdAU-qA_-HmBxD1rMNSGfi-XziQQeCSljf2ONLau3XOdHHehBAbcNthoot0neux5OuxHGhb_1huH9nj6I8QDVsUdQ7CrofvKqSphF4cbLobmx4_nELpLeZvWpSMh908SrgW_7-frcAf/w600-h337-p-k-no-nu-rw-e90/ignite.png"
-  ></video>
+  document.getElementById('sr7GoogleBtn').addEventListener('click', sr7GoogleSignIn);
 
- 
-  <!-- Center Controls -->
-  <div class="sr7-center-controls" id="sr7CenterControls">
+  /* ════════════════════════════════════════════════════════════
+     3. CATCH REDIRECT RESULT
+  ════════════════════════════════════════════════════════════ */
+  auth.getRedirectResult().then(function (result) {
+    if (result && result.user) {
+      sr7Toast('Signed in as ' + (result.user.displayName || result.user.email), 'success');
+      sr7RedirectToDashboard();
+    }
+  }).catch(function (err) {
+    if (!err || !err.code || err.code === 'auth/no-auth-event') return;
+    sr7Toast(sr7FriendlyError(err.code), 'error');
+  });
 
-    <!-- Backward -->
-    <button class="sr7-control-btn" id="sr7Back">
+  /* ════════════════════════════════════════════════════════════
+     4. AUTH STATE — if already signed in, skip the login form
+  ════════════════════════════════════════════════════════════ */
+  let sr7InitialCheckDone = false;
+  auth.onAuthStateChanged(function (user) {
+    if (user && !sr7InitialCheckDone) {
+      sr7RedirectToDashboard();
+    }
+    sr7InitialCheckDone = true;
+  });
 
-      <svg class='line' viewBox='0 0 24 24'>
-        <path d='M9.54004 15.92V10.5801L8.04004 12.2501'></path>
-        <path d='M10.02 4.46997L12 2'></path>
-        <path d='M4.91 7.79999C3.8 9.27999 3.10999 11.11 3.10999 13.11C3.10999 18.02 7.09 22 12 22C16.91 22 20.89 18.02 20.89 13.11C20.89 8.19999 16.91 4.21997 12 4.21997C11.32 4.21997 10.66 4.31002 10.02 4.46002'></path>
-        <path d='M14 10.5801C15.1 10.5801 16 11.4801 16 12.5801V13.9301C16 15.0301 15.1 15.9301 14 15.9301C12.9 15.9301 12 15.0301 12 13.9301V12.5801C12 11.4701 12.9 10.5801 14 10.5801Z'></path>
-      </svg>
+  /* ════════════════════════════════════════════════════════════
+     5. UI HELPERS
+  ════════════════════════════════════════════════════════════ */
+  const SR7_TOAST_ICONS = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7.5v6"/><path d="M12 16.5h.01"/></svg>'
+  };
 
-    </button>
+  function sr7Toast(msg, type, duration) {
+    const el = document.getElementById('sr7Toast');
+    const iconMarkup = SR7_TOAST_ICONS[type] ? '<span class="sr7-toast-icon">' + SR7_TOAST_ICONS[type] + '</span>' : '';
+    el.innerHTML = iconMarkup + '<span class="sr7-toast-msg"></span>';
+    el.querySelector('.sr7-toast-msg').textContent = msg;
+    el.className = 'sr7-toast show' + (type ? ' ' + type : '');
+    clearTimeout(el._sr7Timer);
+    el._sr7Timer = setTimeout(function () {
+      el.classList.remove('show');
+    }, duration || 3400);
+  }
 
-    <!-- Play Pause -->
-    <button class="sr7-control-btn sr7-play-btn" id="sr7PlayPause">
+  function sr7SetLoading(btnId, spinnerId, textId, isLoading) {
+    document.getElementById(btnId).disabled = isLoading;
+    document.getElementById(spinnerId).classList.toggle('show', isLoading);
+    document.getElementById(textId).style.visibility = isLoading ? 'hidden' : '';
+  }
 
-      <span id="sr7PlayIcon">
+  function sr7ClearErrors() {
+    const ids = arguments;
+    for (let i = 0; i < ids.length; i++) {
+      const el = document.getElementById(ids[i]);
+      if (el) { el.textContent = ''; el.classList.remove('show'); }
+    }
+  }
 
-        <svg class='line' viewBox='0 0 24 24'>
-          <path d='M4 11.9999V8.43989C4 4.01989 7.13 2.2099 10.96 4.4199L14.05 6.1999L17.14 7.9799C20.97 10.1899 20.97 13.8099 17.14 16.0199L14.05 17.7999L10.96 19.5799C7.13 21.7899 4 19.9799 4 15.5599V11.9999Z'></path>
-        </svg>
+  function sr7ShowError(id, msg) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = msg; el.classList.add('show'); }
+  }
 
-      </span>
+  function sr7SetInputError(id, hasError) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('is-error', hasError);
+  }
 
-    </button>
+  function sr7FriendlyError(code) {
+    const map = {
+      'auth/user-not-found':            'No account found with that email.',
+      'auth/wrong-password':            'Incorrect password. Please try again.',
+      'auth/invalid-credential':        'Email or password is incorrect.',
+      'auth/invalid-email':             'Please enter a valid email address.',
+      'auth/email-already-in-use':      'This email is already registered.',
+      'auth/weak-password':             'Password must be at least 6 characters.',
+      'auth/too-many-requests':         'Too many attempts. Please wait and try again.',
+      'auth/network-request-failed':    'Network error. Check your connection and try again.',
+      'auth/popup-blocked':             'Your browser blocked the sign-in popup. Trying another way...',
+      'auth/unauthorized-domain':       'This domain isn\'t authorized for sign-in in Firebase. Contact support.',
+      'auth/operation-not-allowed':     'This sign-in method is currently disabled.',
+      'auth/account-exists-with-different-credential': 'An account already exists with this email using a different sign-in method.'
+    };
+    if (map[code]) return map[code];
+    console.error('Firebase auth error:', code);
+    return 'Something went wrong' + (code ? ' (' + code + ')' : '') + '. Please try again.';
+  }
 
-    <!-- Forward -->
-    <button class="sr7-control-btn" id="sr7Forward">
+  function sr7IsValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
-      <svg class='line' viewBox='0 0 24 24'>
-        <path d='M13.98 4.46997L12 2'></path>
-        <path d='M19.0899 7.79999C20.1999 9.27999 20.8899 11.11 20.8899 13.11C20.8899 18.02 16.9099 22 11.9999 22C7.08988 22 3.10986 18.02 3.10986 13.11C3.10986 8.19999 7.08988 4.21997 11.9999 4.21997C12.6799 4.21997 13.3399 4.31002 13.9799 4.46002'></path>
-        <path d='M9.54004 15.92V10.5801L8.04004 12.2501'></path>
-        <path d='M14 10.5801C15.1 10.5801 16 11.4801 16 12.5801V13.9301C16 15.0301 15.1 15.9301 14 15.9301C12.9 15.9301 12 15.0301 12 13.9301V12.5801C12 11.4701 12.9 10.5801 14 10.5801Z'></path>
-      </svg>
+  /* ════════════════════════════════════════════════════════════
+     6. PASSWORD VISIBILITY TOGGLE
+  ════════════════════════════════════════════════════════════ */
+  window.sr7TogglePassword = function (inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isVisible = input.type === 'text';
+    input.type = isVisible ? 'password' : 'text';
+    btn.classList.toggle('is-visible', !isVisible);
+    btn.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
+  };
 
-    </button>
+  /* ════════════════════════════════════════════════════════════
+     7. TAB SWITCHING
+  ════════════════════════════════════════════════════════════ */
+  window.sr7SwitchTab = function (tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('sr7LoginForm').style.display  = isLogin ? '' : 'none';
+    document.getElementById('sr7SignupForm').style.display = isLogin ? 'none' : '';
+    document.getElementById('sr7ForgotForm').style.display = 'none';
+    document.getElementById('sr7TabLogin').classList.toggle('active', isLogin);
+    document.getElementById('sr7TabSignup').classList.toggle('active', !isLogin);
+    document.getElementById('sr7TabLogin').setAttribute('aria-selected', isLogin);
+    document.getElementById('sr7TabSignup').setAttribute('aria-selected', !isLogin);
+    document.querySelector('.sr7-tabs').style.display = '';
+    document.getElementById('sr7Subtitle').textContent = isLogin
+      ? 'Sign in to continue to your account'
+      : 'Create an account to get started';
+  };
 
-  </div>
+  window.sr7ShowForgot = function () {
+    document.getElementById('sr7LoginForm').style.display  = 'none';
+    document.getElementById('sr7SignupForm').style.display = 'none';
+    document.getElementById('sr7ForgotForm').style.display = '';
+    document.querySelector('.sr7-tabs').style.display = 'none';
+    document.getElementById('sr7Subtitle').textContent = 'Enter your email to reset your password';
+    sr7ClearErrors('sr7ResetEmailErr');
+    document.getElementById('sr7ResetEmail').focus();
+  };
 
-  <!-- Bottom Controls -->
-  <div class="sr7-bottom-controls" id="sr7BottomControls">
+  window.sr7BackToLogin = function () {
+    sr7SwitchTab('login');
+  };
 
-    <div class="sr7-progress-wrap">
+  /* ════════════════════════════════════════════════════════════
+     8. LOGIN
+  ════════════════════════════════════════════════════════════ */
+  window.sr7HandleLogin = function () {
+    sr7ClearErrors('sr7LoginEmailErr', 'sr7LoginPassErr');
+    sr7SetInputError('sr7LoginEmail', false);
+    sr7SetInputError('sr7LoginPassword', false);
 
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value="0"
-        id="sr7Progress"
-      >
+    const email = document.getElementById('sr7LoginEmail').value.trim();
+    const pass  = document.getElementById('sr7LoginPassword').value;
 
-    </div>
+    if (!email || !sr7IsValidEmail(email)) {
+      sr7ShowError('sr7LoginEmailErr', 'Enter a valid email address.');
+      sr7SetInputError('sr7LoginEmail', true);
+      return;
+    }
+    if (!pass) {
+      sr7ShowError('sr7LoginPassErr', 'Password is required.');
+      sr7SetInputError('sr7LoginPassword', true);
+      return;
+    }
 
-    <div class="sr7-controls-row">
+    sr7SetLoading('sr7LoginBtn', 'sr7LoginSpinner', 'sr7LoginBtnText', true);
 
-      <div class="sr7-time">
-        <span id="sr7CurrentTime">0:00</span>
-        /
-        <span id="sr7Duration">0:00</span>
-      </div>
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(function () {
+        sr7Toast('Signed in successfully', 'success');
+        sr7RedirectToDashboard();
+      })
+      .catch(function (err) {
+        sr7ShowError('sr7LoginPassErr', sr7FriendlyError(err.code));
+        sr7SetInputError('sr7LoginPassword', true);
+      })
+      .finally(function () {
+        sr7SetLoading('sr7LoginBtn', 'sr7LoginSpinner', 'sr7LoginBtnText', false);
+      });
+  };
 
-      <div class="sr7-right-controls">
+  /* ════════════════════════════════════════════════════════════
+     9. SIGN UP
+  ════════════════════════════════════════════════════════════ */
+  window.sr7HandleSignup = function () {
+    sr7ClearErrors('sr7SignupNameErr', 'sr7SignupEmailErr', 'sr7SignupPassErr');
+    sr7SetInputError('sr7SignupEmail', false);
+    sr7SetInputError('sr7SignupPassword', false);
 
-        <select id="sr7Speed">
-          <option value="0.5">0.5x</option>
-          <option value="0.75">0.75x</option>
-          <option value="1" selected>1x</option>
-          <option value="1.25">1.25x</option>
-          <option value="1.5">1.5x</option>
-          <option value="2">2x</option>
-        </select>
-        
-        <div class="sr7-quality">
+    const name  = document.getElementById('sr7SignupName').value.trim();
+    const email = document.getElementById('sr7SignupEmail').value.trim();
+    const pass  = document.getElementById('sr7SignupPassword').value;
 
-  <button id="sr7QualityBtn" class="sr7-control-btn sr7-quality-btn">
-<svg class='line' viewBox='0 0 24 24'><path d='M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z' stroke-miterlimit='10'></path><path d='M2 12.8799V11.1199C2 10.0799 2.85 9.21994 3.9 9.21994C5.71 9.21994 6.45 7.93994 5.54 6.36994C5.02 5.46994 5.33 4.29994 6.24 3.77994L7.97 2.78994C8.76 2.31994 9.78 2.59994 10.25 3.38994L10.36 3.57994C11.26 5.14994 12.74 5.14994 13.65 3.57994L13.76 3.38994C14.23 2.59994 15.25 2.31994 16.04 2.78994L17.77 3.77994C18.68 4.29994 18.99 5.46994 18.47 6.36994C17.56 7.93994 18.3 9.21994 20.11 9.21994C21.15 9.21994 22.01 10.0699 22.01 11.1199V12.8799C22.01 13.9199 21.16 14.7799 20.11 14.7799C18.3 14.7799 17.56 16.0599 18.47 17.6299C18.99 18.5399 18.68 19.6999 17.77 20.2199L16.04 21.2099C15.25 21.6799 14.23 21.3999 13.76 20.6099L13.65 20.4199C12.75 18.8499 11.27 18.8499 10.36 20.4199L10.25 20.6099C9.78 21.3999 8.76 21.6799 7.97 21.2099L6.24 20.2199C5.33 19.6999 5.02 18.5299 5.54 17.6299C6.45 16.0599 5.71 14.7799 3.9 14.7799C2.85 14.7799 2 13.9199 2 12.8799Z' stroke-miterlimit='10'></path></svg>
-         
+    if (!email || !sr7IsValidEmail(email)) {
+      sr7ShowError('sr7SignupEmailErr', 'Enter a valid email address.');
+      sr7SetInputError('sr7SignupEmail', true);
+      return;
+    }
+    if (pass.length < 8) {
+      sr7ShowError('sr7SignupPassErr', 'Use at least 8 characters.');
+      sr7SetInputError('sr7SignupPassword', true);
+      return;
+    }
 
-  </button>
+    sr7SetLoading('sr7SignupBtn', 'sr7SignupSpinner', 'sr7SignupBtnText', true);
 
-  <div class="sr7-quality-menu" id="sr7QualityMenu">
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(function (cred) {
+        const profileUpdate = name ? cred.user.updateProfile({ displayName: name }) : Promise.resolve();
+        return profileUpdate.then(function () {
+          return cred.user.sendEmailVerification();
+        });
+      })
+      .then(function () {
+        sr7Toast('Account created - check your email to verify', 'success');
+        sr7RedirectToDashboard();
+      })
+      .catch(function (err) {
+        sr7ShowError('sr7SignupEmailErr', sr7FriendlyError(err.code));
+        sr7SetInputError('sr7SignupEmail', true);
+      })
+      .finally(function () {
+        sr7SetLoading('sr7SignupBtn', 'sr7SignupSpinner', 'sr7SignupBtnText', false);
+      });
+  };
 
-    <button data-quality="1080">1080p</button>
-    <button data-quality="720">720p</button>
-    <button data-quality="480">480p</button>
-    <button data-quality="360">360p</button>
+  /* ════════════════════════════════════════════════════════════
+     10. PASSWORD RESET
+  ════════════════════════════════════════════════════════════ */
+  window.sr7HandlePasswordReset = function () {
+    sr7ClearErrors('sr7ResetEmailErr');
+    sr7SetInputError('sr7ResetEmail', false);
 
-  </div>
+    const email = document.getElementById('sr7ResetEmail').value.trim();
+    if (!email || !sr7IsValidEmail(email)) {
+      sr7ShowError('sr7ResetEmailErr', 'Enter a valid email address.');
+      sr7SetInputError('sr7ResetEmail', true);
+      return;
+    }
 
-</div>
+    sr7SetLoading('sr7ResetBtn', 'sr7ResetSpinner', 'sr7ResetBtnText', true);
 
-        <button id="sr7Fullscreen" class="sr7-control-btn">
+    auth.sendPasswordResetEmail(email)
+      .then(function () {
+        sr7Toast('Reset link sent - check your inbox', 'success');
+        sr7BackToLogin();
+      })
+      .catch(function (err) {
+        sr7ShowError('sr7ResetEmailErr', sr7FriendlyError(err.code));
+        sr7SetInputError('sr7ResetEmail', true);
+      })
+      .finally(function () {
+        sr7SetLoading('sr7ResetBtn', 'sr7ResetSpinner', 'sr7ResetBtnText', false);
+      });
+  };
 
-          <span id="sr7FullscreenIcon">
+  /* ════════════════════════════════════════════════════════════
+     11. ENTER-KEY NAVIGATION
+  ════════════════════════════════════════════════════════════ */
+  document.getElementById('sr7LoginEmail').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('sr7LoginPassword').focus(); }
+  });
+  document.getElementById('sr7LoginPassword').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); sr7HandleLogin(); }
+  });
+  document.getElementById('sr7SignupEmail').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('sr7SignupPassword').focus(); }
+  });
+  document.getElementById('sr7SignupPassword').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); sr7HandleSignup(); }
+  });
+  document.getElementById('sr7ResetEmail').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); sr7HandlePasswordReset(); }
+  });
 
-            <svg class='line' viewBox='0 0 24 24'>
-              <path d='M2 9V6.5C2 4.01 4.01 2 6.5 2H9'></path>
-              <path d='M15 2H17.5C19.99 2 22 4.01 22 6.5V9'></path>
-              <path d='M22 16V17.5C22 19.99 19.99 22 17.5 22H16'></path>
-              <path d='M9 22H6.5C4.01 22 2 19.99 2 17.5V15'></path>
-            </svg>
-
-          </span>
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- Resume Toast -->
-  <div id="sr7ResumeToast" class="sr7-resume-toast">
-    Resuming from where you left off...
-  </div>
-
-</div>
+})();
+</script>
