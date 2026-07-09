@@ -1,1035 +1,905 @@
-<!-- ════════════════════════════════════════════════════════════════
-     SR7Themes — Login Page
-     Plus UI compatible · Inclusive Sans · Firebase Authentication
-     Paste this entire block into a Blogger HTML Page.
-════════════════════════════════════════════════════════════════ -->
+<!-- SR7Themes — Checkout Page
+     Paste this entire block into a Blogger HTML Page (/p/checkout.html)
+     Usage: /p/checkout.html?id=PRODUCT_DOC_ID
 
+     ══ ICON SYSTEM ══
+     Every icon on this page follows the same pattern:
+       <svg class='line' viewBox='0 0 24 24' width="..." height="...">
+         <path d='...'></path>
+       </svg>
+     The "line" class (defined once below) controls stroke color/width/caps
+     for every icon at once. To swap any single icon: keep the <svg> wrapper
+     and width/height, just replace the <path> data inside. To restyle every
+     icon on the page at once (e.g. thicker/thinner lines), edit the single
+     "svg.line" rule in the CSS.
+
+     ══ NOTE ON SPECIAL CHARACTERS IN <script> ══
+     Blogger's HTML editor can silently mangle non-ASCII punctuation
+     (em dashes, curly quotes, etc.) typed or pasted inside a <script>
+     block, turning a real "—" character into the literal six characters
+     "&#8212;" showing up on screen instead of a rendered dash. To avoid
+     this, every JS string literal in this file uses plain ASCII " - "
+     instead of "—". The static HTML/CSS outside <script> is unaffected
+     and keeps real em dashes for visual polish.
+-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital@0;1&display=swap" rel="stylesheet">
 
 <style>
-/* ════════════════════════════════════════════════════════════════
-   1. DESIGN TOKENS — pulls Plus UI's real theme color (--linkB) so
-      buttons always match the active theme, with a complete dark
-      override block so dark mode is correct even if the underlying
-      Plus UI variables don't flip automatically.
-════════════════════════════════════════════════════════════════ */
-.sr7-auth-scope {
-  --sr7-bg:            var(--background, #ffffff);
-  --sr7-surface:       var(--card-background, #ffffff);
-  --sr7-surface-2:     var(--input-background, #f5f5f7);
-  --sr7-border:        var(--border-color, #e3e3e8);
-  --sr7-border-strong: var(--border-color-strong, #cfcfd8);
-  --sr7-text:          var(--text-color, #14141a);
-  --sr7-text-muted:    var(--text-color-secondary, #6b6b76);
-  --sr7-text-subtle:   var(--text-color-tertiary, #9c9ca6);
-  --sr7-accent:        var(--linkB, #4f46e5);
-  --sr7-accent-hover:  color-mix(in srgb, var(--sr7-accent) 85%, black);
-  --sr7-accent-soft:   color-mix(in srgb, var(--sr7-accent) 12%, transparent);
-  --sr7-danger:        #dc2626;
-  --sr7-danger-soft:   #fef2f2;
-  --sr7-success:       #16a34a;
-  --sr7-success-soft:  #f0fdf4;
-  --sr7-shadow-sm:     0 1px 2px rgba(20,20,26,0.04);
-  --sr7-shadow-card:   0 1px 3px rgba(20,20,26,0.06), 0 12px 32px rgba(20,20,26,0.06);
-  --sr7-radius-card:   20px;
-  --sr7-radius-input:  12px;
-  --sr7-radius-btn:    12px;
-  --sr7-font:          'Inclusive Sans', system-ui, -apple-system, sans-serif;
+.sr7-co-scope {
+  --sr7-accent:      var(--linkB, #4f46e5);
+  --sr7-accent-soft: rgba(79,70,229,0.10);
+  --sr7-surface:     var(--contentB, #ffffff);
+  --sr7-surface-2:   var(--transB, #f5f5f7);
+  --sr7-border:      var(--contentL, #e3e3e8);
+  --sr7-border-str:  rgba(0,0,0,0.18);
+  --sr7-text:        var(--contentC, #14141a);
+  --sr7-muted:       rgba(20,20,26,0.55);
+  --sr7-subtle:      rgba(20,20,26,0.35);
+  --sr7-danger:      #dc2626;
+  --sr7-danger-soft: #fef2f2;
+  --sr7-success:     #16a34a;
+  --sr7-success-soft:#f0fdf4;
+  --sr7-warning:     #d97706;
+  --sr7-warning-soft:#fffbeb;
+  --sr7-shadow:      0 1px 3px rgba(20,20,26,.06),0 12px 32px rgba(20,20,26,.07);
+  --sr7-r:           20px;
+  --sr7-r-btn:       12px;
+  --sr7-r-inp:       12px;
+  --sr7-font:        'Inclusive Sans',system-ui,-apple-system,sans-serif;
 }
+.drK .sr7-co-scope, .drK.sr7-co-scope {
+  --sr7-accent:      var(--linkB, #6366f1);
+  --sr7-accent-soft: rgba(99,102,241,0.16);
+  --sr7-surface:     var(--contentB, #17171b);
+  --sr7-surface-2:   var(--transB, #1f1f24);
+  --sr7-border:      var(--contentL, #2a2a30);
+  --sr7-border-str:  rgba(255,255,255,0.16);
+  --sr7-text:        var(--contentC, #f2f2f4);
+  --sr7-muted:       rgba(242,242,244,0.6);
+  --sr7-subtle:      rgba(242,242,244,0.4);
+  --sr7-danger:      #f87171;
+  --sr7-danger-soft: rgba(248,113,113,0.1);
+  --sr7-success:     #4ade80;
+  --sr7-success-soft:rgba(74,222,128,0.1);
+  --sr7-warning:     #fbbf24;
+  --sr7-warning-soft:rgba(251,191,36,0.1);
+  --sr7-shadow:      0 1px 3px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.4);
+}
+.sr7-co-scope,
+.sr7-co-scope * { box-sizing:border-box; }
+.sr7-co-scope {
+  font-family:var(--sr7-font);
+  color:var(--sr7-text);
+}
+.sr7-co-scope h1,.sr7-co-scope h2,.sr7-co-scope h3,
+.sr7-co-scope p,.sr7-co-scope button,.sr7-co-scope span,
+.sr7-co-scope label,.sr7-co-scope a { margin:0; font-family:var(--sr7-font); }
 
-/* Dark mode — Plus UI applies a ".drK" class to the root/body.
-   Every token is explicitly redefined here (not just the accent) so
-   dark mode is correct regardless of whether Plus UI's own variables
-   change automatically. */
-.drK .sr7-auth-scope,
-.drK.sr7-auth-scope {
-  --sr7-bg:            var(--background, #0e0e11);
-  --sr7-surface:       var(--card-background, #17171b);
-  --sr7-surface-2:     var(--input-background, #1f1f24);
-  --sr7-border:        var(--border-color, #2a2a30);
-  --sr7-border-strong: var(--border-color-strong, #3a3a42);
-  --sr7-text:          var(--text-color, #f2f2f4);
-  --sr7-text-muted:    var(--text-color-secondary, #a3a3ad);
-  --sr7-text-subtle:   var(--text-color-tertiary, #6e6e78);
-  --sr7-accent:        var(--linkB, #6366f1);
-  --sr7-accent-hover:  color-mix(in srgb, var(--sr7-accent) 80%, white);
-  --sr7-accent-soft:   color-mix(in srgb, var(--sr7-accent) 16%, transparent);
-  --sr7-danger:        #f87171;
-  --sr7-danger-soft:   rgba(248,113,113,0.1);
-  --sr7-success:       #4ade80;
-  --sr7-success-soft:  rgba(74,222,128,0.1);
-  --sr7-shadow-card:   0 1px 3px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
-}
-
-/* ════════════════════════════════════════════════════════════════
-   2. RESET — scoped only to our blocks, never touches Plus UI
-════════════════════════════════════════════════════════════════ */
-.sr7-auth-scope, .sr7-auth-scope * {
-  box-sizing: border-box;
-}
-.sr7-auth-scope {
-  font-family: var(--sr7-font);
-  color: var(--sr7-text);
-}
-.sr7-auth-scope h1, .sr7-auth-scope h2, .sr7-auth-scope p,
-.sr7-auth-scope button, .sr7-auth-scope input, .sr7-auth-scope label {
-  margin: 0;
-  font-family: var(--sr7-font);
-}
-
-/* ════════════════════════════════════════════════════════════════
-   3. LAYOUT — no background forced, inherits page/Plus UI background
-════════════════════════════════════════════════════════════════ */
-.sr7-auth-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 100vh;
-  padding: 40px 16px;
-}
-
-.sr7-brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  margin-bottom: 32px;
-  text-decoration: none;
-}
-
-.sr7-brand-logo {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-
-.sr7-brand-name {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  color: var(--sr7-text);
-}
-
-/* ════════════════════════════════════════════════════════════════
-   4. CARD
-════════════════════════════════════════════════════════════════ */
-.sr7-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--sr7-surface);
-  border: 1px solid var(--sr7-border);
-  border-radius: var(--sr7-radius-card);
-  box-shadow: var(--sr7-shadow-card);
-  padding: 36px 30px;
-  animation: sr7-card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes sr7-card-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.sr7-card-title {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
-  line-height: 1.25;
-  text-align: center;
-  margin-bottom: 6px;
-}
-
-.sr7-card-subtitle {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--sr7-text-muted);
-  text-align: center;
-  line-height: 1.5;
-  margin-bottom: 28px;
-}
-
-/* ════════════════════════════════════════════════════════════════
-   5. BUTTONS — unified height, consistent radius/typography
-════════════════════════════════════════════════════════════════ */
-.sr7-btn {
-  width: 100%;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border-radius: var(--sr7-radius-btn);
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.1px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background 0.15s ease, border-color 0.15s ease,
-              box-shadow 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.sr7-btn:active { transform: scale(0.985); }
-.sr7-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-
-.sr7-btn-google {
-  background: var(--sr7-surface-2);
-  border-color: var(--sr7-border);
-  color: var(--sr7-text);
-}
-.sr7-btn-google:hover:not(:disabled) {
-  border-color: var(--sr7-border-strong);
-  box-shadow: var(--sr7-shadow-sm);
-}
-
-/* Text is a fixed white rather than a theme variable — Plus UI's
-   accent color is meant to be a solid, fairly saturated brand color,
-   so white always gives reliable contrast against it. */
-.sr7-btn-primary {
-  background: var(--sr7-accent);
-  border-color: var(--sr7-accent);
-  color: #fff;
-}
-.sr7-btn-primary:hover:not(:disabled) { background: var(--sr7-accent-hover); }
-
-.sr7-btn svg { flex-shrink: 0; }
-
-/* ════════════════════════════════════════════════════════════════
-   6. DIVIDER
-════════════════════════════════════════════════════════════════ */
-.sr7-divider {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 24px 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--sr7-text-subtle);
-}
-.sr7-divider::before, .sr7-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--sr7-border);
-}
-
-/* ════════════════════════════════════════════════════════════════
-   7. TABS — fixed centering, consistent height
-════════════════════════════════════════════════════════════════ */
-.sr7-tabs {
-  display: flex;
-  background: var(--sr7-surface-2);
-  border: 1px solid var(--sr7-border);
-  border-radius: var(--sr7-radius-btn);
-  padding: 3px;
-  margin-bottom: 26px;
-  gap: 3px;
-}
-.sr7-tab {
-  flex: 1;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--sr7-text-muted);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-  line-height: 1;
-}
-.sr7-tab.active {
-  background: var(--sr7-surface);
-  color: var(--sr7-accent);
-  box-shadow: var(--sr7-shadow-sm);
-}
-
-/* ════════════════════════════════════════════════════════════════
-   8. FORM FIELDS
-════════════════════════════════════════════════════════════════ */
-.sr7-field { margin-bottom: 18px; }
-.sr7-field:last-of-type { margin-bottom: 0; }
-
-.sr7-label {
-  display: block;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--sr7-text);
-  margin-bottom: 8px;
-}
-
-.sr7-input-wrap { position: relative; }
-
-.sr7-input {
-  width: 100%;
-  height: 48px;
-  padding: 0 16px;
-  background: var(--sr7-surface-2);
-  border: 1.5px solid var(--sr7-border);
-  border-radius: var(--sr7-radius-input);
-  color: var(--sr7-text);
-  font-size: 15px;
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.sr7-input.has-toggle { padding-right: 46px; }
-
-.sr7-input::placeholder { color: var(--sr7-text-subtle); }
-
-.sr7-input:focus {
-  border-color: var(--sr7-accent);
-  box-shadow: 0 0 0 3.5px var(--sr7-accent-soft);
-}
-
-.sr7-input.is-error {
-  border-color: var(--sr7-danger);
-  box-shadow: 0 0 0 3.5px var(--sr7-danger-soft);
-}
-
-/* Password show/hide toggle — outlined "line" style icon */
-.sr7-toggle-pass {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--sr7-text-subtle);
-  transition: color 0.15s ease, background 0.15s ease;
-}
-.sr7-toggle-pass:hover { color: var(--sr7-text-muted); background: var(--sr7-border); }
-.sr7-toggle-pass svg {
-  width: 19px;
-  height: 19px;
+.sr7-co-scope svg.line {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-.sr7-toggle-pass .icon-off { display: none; }
-.sr7-toggle-pass.is-visible .icon-on  { display: none; }
-.sr7-toggle-pass.is-visible .icon-off { display: block; }
-
-.sr7-hint {
-  margin-top: 7px;
-  font-size: 12.5px;
-  color: var(--sr7-text-muted);
-  line-height: 1.45;
-}
-
-.sr7-error {
-  margin-top: 7px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--sr7-danger);
-  display: none;
-  align-items: flex-start;
-  gap: 5px;
-  line-height: 1.4;
-}
-.sr7-error.show { display: flex; }
-
-/* ════════════════════════════════════════════════════════════════
-   9. LINKS / ROWS
-════════════════════════════════════════════════════════════════ */
-.sr7-row-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.sr7-link {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--sr7-accent);
-  text-decoration: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-.sr7-link:hover { text-decoration: underline; }
-
-.sr7-link-row {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 13.5px;
-  color: var(--sr7-text-muted);
-}
-
-/* ════════════════════════════════════════════════════════════════
-   10. SPINNER
-════════════════════════════════════════════════════════════════ */
-.sr7-spinner {
-  width: 17px;
-  height: 17px;
-  border: 2.5px solid rgba(255,255,255,0.35);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: sr7-spin 0.65s linear infinite;
-  display: none;
   flex-shrink: 0;
 }
-.sr7-btn-google .sr7-spinner {
-  border: 2.5px solid var(--sr7-border-strong);
-  border-top-color: var(--sr7-text-muted);
-}
-.sr7-spinner.show { display: block; }
-@keyframes sr7-spin { to { transform: rotate(360deg); } }
 
-/* ════════════════════════════════════════════════════════════════
-   11. TOAST — colored surface per type + icon
-════════════════════════════════════════════════════════════════ */
+.sr7-co-wrap {
+  width:100%; max-width:780px;
+  margin:0 auto; padding:32px 20px 72px;
+}
+
+.sr7-co-hdr {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  gap:12px; margin-bottom:32px;
+}
+.sr7-brand {
+  display:flex; align-items:center; gap:10px; text-decoration:none;
+}
+.sr7-brand-logo {
+  width:32px; height:32px; object-fit:contain;
+  border-radius:8px; flex-shrink:0;
+}
+.sr7-brand-name {
+  font-size:16px; font-weight:700;
+  letter-spacing:-0.2px; color:var(--sr7-text);
+}
+.sr7-back-btn {
+  display:flex; align-items:center; gap:7px;
+  height:40px; padding:0 15px;
+  border-radius:var(--sr7-r-btn);
+  background:var(--sr7-surface-2);
+  border:1px solid var(--sr7-border);
+  color:var(--sr7-text); font-size:13.5px; font-weight:600;
+  cursor:pointer; text-decoration:none;
+  transition:border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.sr7-back-btn:hover { border-color:var(--sr7-border-str); }
+
+.sr7-steps {
+  display:flex; align-items:center; gap:0;
+  margin-bottom:28px;
+}
+.sr7-step {
+  display:flex; align-items:center; gap:8px;
+  font-size:13px; font-weight:600;
+  color:var(--sr7-subtle);
+}
+.sr7-step.active { color:var(--sr7-accent); }
+.sr7-step.done   { color:var(--sr7-success); }
+.sr7-step-num {
+  width:26px; height:26px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; flex-shrink:0;
+  background:var(--sr7-surface-2); border:1.5px solid var(--sr7-border);
+  color:var(--sr7-subtle);
+}
+.sr7-step.active .sr7-step-num {
+  background:var(--sr7-accent-soft); border-color:var(--sr7-accent);
+  color:var(--sr7-accent);
+}
+.sr7-step.done .sr7-step-num {
+  background:var(--sr7-success-soft); border-color:var(--sr7-success);
+  color:var(--sr7-success);
+}
+.sr7-step-num svg.line { width:15px; height:15px; }
+.sr7-step-div {
+  flex:1; height:1.5px;
+  background:var(--sr7-border); margin:0 8px;
+}
+
+.sr7-co-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px; align-items:start;
+}
+@media(max-width:640px) { .sr7-co-grid { grid-template-columns:1fr; } }
+
+.sr7-card {
+  background:var(--sr7-surface);
+  border:1px solid var(--sr7-border);
+  border-radius:var(--sr7-r);
+  box-shadow:var(--sr7-shadow);
+  overflow:hidden;
+}
+
+.sr7-prod-thumb {
+  width:100%; aspect-ratio:16/9; overflow:hidden;
+  background:var(--sr7-surface-2);
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.sr7-prod-thumb img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  position:absolute; inset:0;
+}
+.sr7-prod-thumb-fallback {
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  color:var(--sr7-subtle);
+}
+.sr7-prod-thumb-fallback svg.line { width:34px; height:34px; }
+.sr7-prod-thumb-fallback span { font-size:11px; font-weight:600; }
+.sr7-prod-body { padding:18px; }
+.sr7-prod-tag {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 10px; border-radius:100px;
+  font-size:11.5px; font-weight:700;
+  background:var(--sr7-accent-soft); color:var(--sr7-accent);
+  margin-bottom:10px;
+}
+.sr7-prod-tag svg.line { width:12px; height:12px; }
+.sr7-prod-name {
+  font-size:16px; font-weight:700;
+  letter-spacing:-0.2px; line-height:1.3; margin-bottom:8px;
+}
+.sr7-prod-desc {
+  font-size:13px; color:var(--sr7-muted);
+  line-height:1.55; margin-bottom:16px;
+}
+.sr7-prod-price-row {
+  display:flex; align-items:center;
+  justify-content:space-between; flex-wrap:wrap; gap:8px;
+  padding:12px 14px;
+  background:var(--sr7-surface-2);
+  border:1px solid var(--sr7-border);
+  border-radius:var(--sr7-r-inp);
+}
+.sr7-prod-price-lbl { font-size:12.5px; color:var(--sr7-muted); font-weight:600; }
+.sr7-prod-price-val { font-size:22px; font-weight:700; letter-spacing:-0.5px; }
+.sr7-prod-version {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:2px 9px; border-radius:100px;
+  font-size:11px; font-weight:700;
+  background:var(--sr7-surface-2); border:1px solid var(--sr7-border);
+  color:var(--sr7-muted);
+}
+
+.sr7-form-head {
+  padding:18px 18px 0;
+}
+.sr7-form-title {
+  font-size:17px; font-weight:700;
+  letter-spacing:-0.2px; margin-bottom:4px;
+}
+.sr7-form-sub {
+  font-size:13px; color:var(--sr7-muted); line-height:1.5;
+}
+
+.sr7-qr-section {
+  margin:16px 18px 0;
+  padding:16px;
+  background:var(--sr7-surface-2);
+  border:1px solid var(--sr7-border);
+  border-radius:var(--sr7-r-inp);
+  text-align:center;
+}
+.sr7-qr-label {
+  font-size:12px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.4px; color:var(--sr7-subtle);
+  margin-bottom:12px; display:block;
+}
+
+.sr7-qr-img-wrap {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:160px; height:160px;
+  border-radius:12px; overflow:hidden;
+  border:2px solid var(--sr7-border);
+  background:#ffffff; margin:0 auto;
+}
+.sr7-qr-img-wrap img {
+  width:100%; height:100%; object-fit:contain;
+  display:block;
+}
+.sr7-qr-placeholder {
+  width:160px; height:160px;
+  border-radius:12px;
+  border:2px dashed var(--sr7-border);
+  background:var(--sr7-surface);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:8px; margin:0 auto;
+  color:var(--sr7-subtle);
+}
+.sr7-qr-placeholder svg.line { width:44px; height:44px; opacity:.6; }
+.sr7-qr-placeholder span { font-size:11px; font-weight:600; }
+
+.sr7-qr-upi {
+  margin-top:10px;
+  font-size:13px; font-weight:700;
+  color:var(--sr7-text); letter-spacing:0.1px;
+}
+.sr7-qr-note {
+  font-size:11.5px; color:var(--sr7-muted);
+  margin-top:4px; line-height:1.4;
+}
+
+.sr7-form-body { padding:16px 18px 18px; display:flex; flex-direction:column; gap:14px; }
+
+.sr7-field { display:flex; flex-direction:column; gap:6px; }
+.sr7-label {
+  font-size:13px; font-weight:700;
+  color:var(--sr7-text); display:flex; align-items:center; gap:5px;
+}
+.sr7-label-req { color:var(--sr7-danger); font-size:14px; line-height:1; }
+.sr7-label-opt {
+  font-size:11px; font-weight:600; color:var(--sr7-subtle);
+  background:var(--sr7-surface-2); border:1px solid var(--sr7-border);
+  padding:1px 6px; border-radius:100px;
+}
+.sr7-hint { font-size:12px; color:var(--sr7-muted); line-height:1.4; }
+
+.sr7-input, .sr7-textarea {
+  width:100%; padding:12px 14px;
+  background:var(--sr7-surface-2);
+  border:1.5px solid var(--sr7-border);
+  border-radius:var(--sr7-r-inp);
+  font-family:var(--sr7-font); font-size:14px; color:var(--sr7-text);
+  transition:border-color .15s, box-shadow .15s;
+  -webkit-appearance:none; appearance:none;
+}
+.sr7-input:focus, .sr7-textarea:focus {
+  outline:none;
+  border-color:var(--sr7-accent);
+  box-shadow:0 0 0 3px var(--sr7-accent-soft);
+}
+.sr7-input::placeholder, .sr7-textarea::placeholder {
+  color:var(--sr7-subtle);
+}
+.sr7-input:disabled { opacity:.75; cursor:default; }
+.sr7-input.err, .sr7-textarea.err { border-color:var(--sr7-danger); box-shadow:0 0 0 3px rgba(220,38,38,.1); }
+.sr7-textarea { resize:vertical; min-height:80px; }
+
+.sr7-input-wrap { position:relative; }
+.sr7-input-icon {
+  position:absolute; left:12px; top:50%; transform:translateY(-50%);
+  color:var(--sr7-muted); pointer-events:none;
+}
+.sr7-input-icon svg.line { width:16px; height:16px; }
+.sr7-input-wrap .sr7-input { padding-left:40px; }
+
+.sr7-total-row {
+  display:flex; align-items:center;
+  justify-content:space-between; gap:8px;
+  padding:12px 14px;
+  background:var(--sr7-accent-soft);
+  border:1.5px solid var(--sr7-accent);
+  border-radius:var(--sr7-r-inp);
+}
+.sr7-total-lbl { font-size:13px; font-weight:700; color:var(--sr7-accent); }
+.sr7-total-val { font-size:20px; font-weight:700; color:var(--sr7-accent); letter-spacing:-0.3px; }
+
+.sr7-terms {
+  display:flex; align-items:flex-start; gap:10px;
+  padding:12px 14px;
+  background:var(--sr7-warning-soft);
+  border:1px solid var(--sr7-warning);
+  border-radius:var(--sr7-r-inp);
+  font-size:12.5px; color:var(--sr7-text);
+  line-height:1.55;
+}
+.sr7-terms svg.line { width:16px; height:16px; margin-top:1px; color:var(--sr7-warning); }
+
+.sr7-submit-btn {
+  width:100%; height:50px;
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  border-radius:var(--sr7-r-btn);
+  background:var(--sr7-accent); border:none;
+  color:#fff;
+  font-family:var(--sr7-font); font-size:15px; font-weight:700;
+  cursor:pointer; transition:filter .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.sr7-submit-btn svg.line { width:17px; height:17px; }
+.sr7-submit-btn:hover { filter:brightness(.92); }
+.sr7-submit-btn:active { transform:scale(.99); }
+.sr7-submit-btn:disabled { opacity:.55; cursor:not-allowed; transform:none; filter:none; }
+.sr7-submit-spin {
+  width:18px; height:18px;
+  border:2.5px solid rgba(255,255,255,.35);
+  border-top-color:#fff; border-radius:50%;
+  animation:sr7spin .6s linear infinite;
+  display:none;
+}
+.sr7-submit-spin.on { display:block; }
+@keyframes sr7spin { to { transform:rotate(360deg); } }
+
+.sr7-success-screen {
+  display:none; text-align:center;
+  padding:48px 24px;
+  background:var(--sr7-surface);
+  border:1px solid var(--sr7-border);
+  border-radius:var(--sr7-r);
+  box-shadow:var(--sr7-shadow);
+}
+.sr7-success-screen.on { display:block; animation:sr7in .4s cubic-bezier(.16,1,.3,1); }
+.sr7-success-icon {
+  width:64px; height:64px; border-radius:20px;
+  background:var(--sr7-success-soft); border:1.5px solid var(--sr7-success);
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px; color:var(--sr7-success);
+}
+.sr7-success-icon svg.line { width:34px; height:34px; }
+.sr7-success-title { font-size:22px; font-weight:700; letter-spacing:-0.4px; margin-bottom:8px; }
+.sr7-success-sub {
+  font-size:14px; color:var(--sr7-muted);
+  line-height:1.6; max-width:380px; margin:0 auto 24px;
+}
+.sr7-success-ref {
+  display:inline-block; padding:8px 18px;
+  background:var(--sr7-surface-2); border:1px solid var(--sr7-border);
+  border-radius:var(--sr7-r-inp); font-size:13px; font-weight:700;
+  letter-spacing:0.3px; color:var(--sr7-text); margin-bottom:24px;
+}
+.sr7-success-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.sr7-success-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  height:44px; padding:0 22px; border-radius:var(--sr7-r-btn);
+  font-family:var(--sr7-font); font-size:14px; font-weight:700;
+  cursor:pointer; text-decoration:none; border:1px solid transparent;
+  transition:filter .15s, border-color .15s;
+}
+.sr7-success-btn svg.line { width:15px; height:15px; }
+.sr7-success-btn.primary { background:var(--sr7-accent); color:#fff; }
+.sr7-success-btn.primary:hover { filter:brightness(.9); }
+.sr7-success-btn.outline { background:var(--sr7-surface-2); border-color:var(--sr7-border); color:var(--sr7-text); }
+.sr7-success-btn.outline:hover { border-color:var(--sr7-border-str); }
+
+.sr7-loading {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:14px; min-height:60vh; text-align:center;
+}
+.sr7-loader {
+  width:30px; height:30px;
+  border:3px solid var(--sr7-border);
+  border-top-color:var(--sr7-accent);
+  border-radius:50%; animation:sr7spin .7s linear infinite;
+}
+.sr7-main { display:none; }
+.sr7-main.on { display:block; animation:sr7in .35s cubic-bezier(.16,1,.3,1); }
+@keyframes sr7in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+.sr7-err-txt {
+  font-size:12px; color:var(--sr7-danger);
+  font-weight:600; display:none;
+}
+.sr7-err-txt.on { display:block; }
+
+.sr7-err-screen-icon {
+  width:52px; height:52px; border-radius:14px;
+  background:var(--sr7-danger-soft); border:1px solid var(--sr7-danger);
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 14px; color:var(--sr7-danger);
+}
+.sr7-err-screen-icon svg.line { width:26px; height:26px; }
+
 .sr7-toast {
-  position: fixed;
-  bottom: 26px;
-  left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  max-width: min(380px, calc(100vw - 32px));
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--sr7-surface);
-  border: 1.5px solid var(--sr7-border);
-  color: var(--sr7-text);
-  font-family: var(--sr7-font);
-  font-size: 13.5px;
-  font-weight: 600;
-  padding: 13px 18px;
-  border-radius: 14px;
-  box-shadow: var(--sr7-shadow-card);
-  opacity: 0;
-  transition: opacity 0.22s ease, transform 0.22s ease;
-  pointer-events: none;
-  z-index: 9999;
-  text-align: left;
+  position:fixed; bottom:26px; left:50%;
+  transform:translateX(-50%) translateY(16px);
+  max-width:min(380px,calc(100vw - 32px));
+  display:flex; align-items:center; gap:10px;
+  background:var(--sr7-surface); border:1.5px solid var(--sr7-border);
+  color:var(--sr7-text); font-family:var(--sr7-font);
+  font-size:13.5px; font-weight:600;
+  padding:13px 18px; border-radius:14px;
+  box-shadow:var(--sr7-shadow);
+  opacity:0; transition:opacity .22s,transform .22s;
+  pointer-events:none; z-index:9999;
 }
-.sr7-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.sr7-toast-icon {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.sr7-toast-msg { line-height: 1.4; }
-.sr7-toast.error {
-  color: var(--sr7-danger);
-  background: var(--sr7-danger-soft);
-  border-color: var(--sr7-danger);
-}
-.sr7-toast.success {
-  color: var(--sr7-success);
-  background: var(--sr7-success-soft);
-  border-color: var(--sr7-success);
-}
-.sr7-toast.success .sr7-toast-msg,
-.sr7-toast.error .sr7-toast-msg { color: var(--sr7-text); font-weight: 500; }
+.sr7-toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+.sr7-toast-ico { flex-shrink:0; width:20px; height:20px; display:flex; align-items:center; justify-content:center; }
+.sr7-toast-ico svg.line { width:20px; height:20px; }
+.sr7-toast-msg { line-height:1.4; font-weight:500; }
+.sr7-toast.ok  { border-color:var(--sr7-success); background:var(--sr7-success-soft); }
+.sr7-toast.err { border-color:var(--sr7-danger);  background:var(--sr7-danger-soft);  }
 
-/* ════════════════════════════════════════════════════════════════
-   12. FOOTER
-════════════════════════════════════════════════════════════════ */
-.sr7-footer {
-  margin-top: 28px;
-  font-size: 12.5px;
-  color: var(--sr7-text-subtle);
-  text-align: center;
-  line-height: 1.6;
-  max-width: 340px;
+@media(max-width:480px) {
+  .sr7-co-wrap { padding:20px 14px 56px; }
+  .sr7-form-body { padding:14px; }
 }
-.sr7-footer a {
-  color: var(--sr7-text-muted);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-/* ════════════════════════════════════════════════════════════════
-   13. RESPONSIVE — mobile-first refinements
-════════════════════════════════════════════════════════════════ */
-@media (max-width: 420px) {
-  .sr7-auth-wrap { padding: 28px 14px; }
-  .sr7-card { padding: 28px 20px; border-radius: 18px; }
-  .sr7-card-title { font-size: 21px; }
-}
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .sr7-spinner { animation: none; }
-  .sr7-btn, .sr7-input, .sr7-tab, .sr7-toast, .sr7-card { transition: none; animation: none; }
-}
-
-/* Focus visibility for accessibility */
-.sr7-auth-scope :focus-visible {
-  outline: 2px solid var(--sr7-accent);
-  outline-offset: 2px;
-}
+.sr7-co-scope :focus-visible { outline:2px solid var(--sr7-accent); outline-offset:2px; }
 </style>
 
-<div class="sr7-auth-scope">
-  <div class="sr7-auth-wrap">
+<div class="sr7-co-scope">
 
-    <!-- Brand -->
-    <a class="sr7-brand" href="https://www.sr7themes.in/" aria-label="SR7Themes home">
-      <img
-        class="sr7-brand-logo"
-        src="https://raw.githubusercontent.com/sr7saim45/sr7themes/refs/heads/main/ChatGPT%20Image%20Jun%2024%2C%202026%20at%2011_52_02%20PM.svg"
-        alt="SR7Themes logo"
-        onerror="this.style.display='none'"
-      />
-      <span class="sr7-brand-name">SR7Themes</span>
-    </a>
+  <div class="sr7-loading" id="sr7Load">
+    <div class="sr7-loader"></div>
+    <p style="font-size:14px;color:var(--sr7-muted)">Loading product details…</p>
+  </div>
 
-    <!-- Card -->
-    <div class="sr7-card">
+  <div class="sr7-main" id="sr7Main">
+    <div class="sr7-co-wrap">
 
-      <h1 class="sr7-card-title">Welcome back</h1>
-      <p class="sr7-card-subtitle" id="sr7Subtitle">Sign in to continue to your account</p>
-<br/>
-      <!-- Google Sign-In -->
-      <button class="sr7-btn sr7-btn-google" id="sr7GoogleBtn" type="button">
-        <div class="sr7-spinner" id="sr7GoogleSpinner"></div>
-        <svg id="sr7GoogleIcon" width="18" height="18" viewBox="0 0 24 24" fill="none">
-         <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" fill="currentColor"></path>
-        </svg>
-        <span id="sr7GoogleBtnText">Continue with Google</span>
-      </button>
-
-      <div class="sr7-divider">or continue with email</div>
-
-      <!-- Tabs: Login / Sign up -->
-      <div class="sr7-tabs" role="tablist">
-        <button class="sr7-tab active" id="sr7TabLogin" role="tab" aria-selected="true" onclick="sr7SwitchTab('login')">Sign in</button>
-        <button class="sr7-tab" id="sr7TabSignup" role="tab" aria-selected="false" onclick="sr7SwitchTab('signup')">Create account</button>
+      <div class="sr7-co-hdr">
+        <a class="sr7-brand" href="https://www.sr7themes.eu.org/">
+          <img class="sr7-brand-logo"
+               src="https://raw.githubusercontent.com/sr7saim45/sr7themes/refs/heads/main/ChatGPT%20Image%20Jun%2024%2C%202026%20at%2011_52_02%20PM.svg"
+               alt="SR7Themes" onerror="this.style.display='none'">
+          <span class="sr7-brand-name">SR7Themes</span>
+        </a>
+        <a class="sr7-back-btn" href="javascript:history.back()">
+          <svg class='line' viewBox='0 0 24 24' width="14" height="14"><path d='M19 12H5'></path><path d='M12 19l-7-7 7-7'></path></svg>
+          Go back
+        </a>
       </div>
 
-      <!-- ── LOGIN FORM ── -->
-      <form id="sr7LoginForm" onsubmit="return false;">
-        <div class="sr7-field">
-          <label class="sr7-label" for="sr7LoginEmail">Email address</label>
-          <input class="sr7-input" type="email" id="sr7LoginEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
-          <div class="sr7-error" id="sr7LoginEmailErr"></div>
+      <div class="sr7-steps">
+        <div class="sr7-step done" id="sr7Step1">
+          <div class="sr7-step-num">
+            <svg class='line' viewBox='0 0 24 24'><path d='M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z'></path><path d='M7.75 12L10.58 14.83L16.25 9.17004'></path></svg>
+          </div>
+          Product selected
+        </div>
+        <div class="sr7-step-div"></div>
+        <div class="sr7-step active" id="sr7Step2">
+          <div class="sr7-step-num">2</div>
+          Payment details
+        </div>
+        <div class="sr7-step-div"></div>
+        <div class="sr7-step" id="sr7Step3">
+          <div class="sr7-step-num">3</div>
+          Confirmation
+        </div>
+      </div>
+
+      <div class="sr7-co-grid" id="sr7FormArea">
+
+        <div class="sr7-card" id="sr7ProdCard">
+          <div class="sr7-prod-thumb" id="sr7ProdThumbWrap">
+          </div>
+          <div class="sr7-prod-body">
+            <div class="sr7-prod-tag">
+              <svg class='line' viewBox='0 0 24 24'><path d='M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z'></path><line x1='3' y1='6' x2='21' y2='6'></line><path d='M16 10a4 4 0 01-8 0'></path></svg>
+              Premium product
+            </div>
+            <div class="sr7-prod-name" id="sr7ProdName">Loading…</div>
+            <div class="sr7-prod-desc" id="sr7ProdDesc"></div>
+            <div class="sr7-prod-price-row">
+              <div>
+                <div class="sr7-prod-price-lbl">Total amount</div>
+                <div class="sr7-prod-price-val" id="sr7ProdPrice">—</div>
+              </div>
+              <div class="sr7-prod-version" id="sr7ProdVer">v1.0</div>
+            </div>
+          </div>
         </div>
 
-        <div class="sr7-field">
-          <div class="sr7-row-between">
-            <label class="sr7-label" for="sr7LoginPassword" style="margin-bottom:0;">Password</label>
-            <button type="button" class="sr7-link" onclick="sr7ShowForgot()">Forgot password?</button>
+        <div class="sr7-card">
+
+          <div class="sr7-form-head">
+            <div class="sr7-form-title">Complete your payment</div>
+            <p class="sr7-form-sub">Scan the QR code, pay the amount, then fill in the details below.</p>
           </div>
-          <div class="sr7-input-wrap">
-            <input class="sr7-input has-toggle" type="password" id="sr7LoginPassword" placeholder="Enter your password" autocomplete="current-password">
-            <button type="button" class="sr7-toggle-pass" id="sr7LoginPassToggle" aria-label="Show password" onclick="sr7TogglePassword('sr7LoginPassword', this)">
-              <svg class="icon-on" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg class="icon-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+
+          <div class="sr7-qr-section">
+            <span class="sr7-qr-label">Scan &amp; Pay</span>
+            <div id="sr7QrWrap"></div>
+            <div class="sr7-qr-upi" id="sr7UpiId">UPI ID: helaldistributors@okicici</div>
+            <div class="sr7-qr-note">Pay exactly the amount shown · Screenshot your payment confirmation</div>
+          </div>
+
+          <div class="sr7-form-body">
+
+            <div class="sr7-total-row">
+              <span class="sr7-total-lbl">Amount to pay</span>
+              <span class="sr7-total-val" id="sr7FormPrice">—</span>
+            </div>
+
+            <div class="sr7-field">
+              <label class="sr7-label" for="sr7NameInp">
+                Your name
+                <span class="sr7-label-req" aria-label="required">*</span>
+              </label>
+              <div class="sr7-input-wrap">
+                <span class="sr7-input-icon"><svg class='line' viewBox='0 0 24 24'><path d='M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2'></path><circle cx='12' cy='7' r='4'></circle></svg></span>
+                <input class="sr7-input" id="sr7NameInp" type="text" placeholder="Your full name">
+              </div>
+              <span class="sr7-err-txt" id="sr7NameErr">Please enter your name.</span>
+            </div>
+
+            <div class="sr7-field">
+              <label class="sr7-label" for="sr7EmailInp">
+                Email address
+                <span class="sr7-label-req" aria-label="required">*</span>
+              </label>
+              <div class="sr7-input-wrap">
+                <span class="sr7-input-icon"><svg class='line' viewBox='0 0 24 24'><path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'></path><polyline points='22,6 12,13 2,6'></polyline></svg></span>
+                <input class="sr7-input" id="sr7EmailInp" type="email" placeholder="you@example.com" disabled>
+              </div>
+              <span class="sr7-hint">This is your signed-in account email and can't be changed here.</span>
+            </div>
+
+            <div class="sr7-field">
+              <label class="sr7-label" for="sr7WebsiteInp">
+                Your website URL
+                <span class="sr7-label-req" aria-label="required">*</span>
+              </label>
+              <div class="sr7-input-wrap">
+                <span class="sr7-input-icon"><svg class='line' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10'></circle><line x1='2' y1='12' x2='22' y2='12'></line><path d='M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z'></path></svg></span>
+                <input class="sr7-input" id="sr7WebsiteInp" type="url"
+                       placeholder="https://yourwebsite.com"
+                       autocomplete="url" autocapitalize="none" spellcheck="false">
+              </div>
+              <span class="sr7-err-txt" id="sr7WebsiteErr">Please enter a valid website URL (starting with https://).</span>
+              <span class="sr7-hint">Give the site url in which you want to add this product.</span>
+            </div>
+
+            <div class="sr7-field">
+              <label class="sr7-label" for="sr7RefInp">
+                Transaction / Reference ID
+                <span class="sr7-label-req" aria-label="required">*</span>
+              </label>
+              <div class="sr7-input-wrap">
+                <span class="sr7-input-icon"><svg class='line' viewBox='0 0 24 24'><rect x='2' y='5' width='20' height='14' rx='2'></rect><line x1='2' y1='10' x2='22' y2='10'></line></svg></span>
+                <input class="sr7-input" id="sr7RefInp" type="text"
+                       placeholder="e.g. 6363636G3T3T43"
+                       autocomplete="off" autocapitalize="characters" spellcheck="false">
+              </div>
+              <span class="sr7-err-txt" id="sr7RefErr">Please enter your transaction / reference ID.</span>
+              <span class="sr7-hint">Find this in your payment app under transaction history.</span>
+            </div>
+
+            <div class="sr7-field">
+              <label class="sr7-label" for="sr7NotesInp">
+                Additional notes
+                <span class="sr7-label-opt">optional</span>
+              </label>
+              <textarea class="sr7-textarea" id="sr7NotesInp"
+                        placeholder="Any extra info you'd like to share (e.g. licence usage, coupon code)…"></textarea>
+            </div>
+
+            <div class="sr7-terms">
+              <svg class='line' viewBox='0 0 24 24'><path d='M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z'></path><line x1='12' y1='9' x2='12' y2='13'></line><line x1='12' y1='17' x2='12.01' y2='17'></line></svg>
+              <span>Your purchase will be <strong>manually reviewed</strong> before download access is granted. This usually takes a few hours. You'll see it in your <a href="/p/downloads.html" style="color:var(--sr7-accent);font-weight:700;">Downloads</a> page once approved.</span>
+            </div>
+
+            <button class="sr7-submit-btn" id="sr7SubmitBtn" type="button">
+              <div class="sr7-submit-spin" id="sr7Spin"></div>
+              <svg class='line' viewBox='0 0 24 24' id="sr7SubmitIco"><path d='M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z'></path><path d='M10.5898 7.67993H14.8298V11.9299'></path><path d='M14.8299 7.67993L9.16992 13.3399'></path><path d='M6 16.51C9.89 17.81 14.11 17.81 18 16.51'></path></svg>
+              Submit payment details
             </button>
+
           </div>
-          <div class="sr7-error" id="sr7LoginPassErr"></div>
         </div>
 
-        <button class="sr7-btn sr7-btn-primary" id="sr7LoginBtn" type="submit" style="margin-top:8px;" onclick="sr7HandleLogin()">
-          <div class="sr7-spinner" id="sr7LoginSpinner"></div>
-          <span id="sr7LoginBtnText">Sign in</span>
-        </button>
-      </form>
+      </div>
 
-      <!-- ── SIGNUP FORM ── -->
-      <form id="sr7SignupForm" style="display:none;" onsubmit="return false;">
-        <div class="sr7-field">
-          <label class="sr7-label" for="sr7SignupName">Full name</label>
-          <input class="sr7-input" type="text" id="sr7SignupName" placeholder="Your name" autocomplete="name">
-          <div class="sr7-error" id="sr7SignupNameErr"></div>
+      <div class="sr7-success-screen" id="sr7Success">
+        <div class="sr7-success-icon">
+          <svg class='line' viewBox='0 0 24 24'><path d='M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z'></path><path d='M7.75 12L10.58 14.83L16.25 9.17004'></path></svg>
         </div>
-
-        <div class="sr7-field">
-          <label class="sr7-label" for="sr7SignupEmail">Email address</label>
-          <input class="sr7-input" type="email" id="sr7SignupEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
-          <div class="sr7-error" id="sr7SignupEmailErr"></div>
+        <div class="sr7-success-title">Payment submitted!</div>
+        <p class="sr7-success-sub">
+          Thank you! Your payment details have been received and are being reviewed.
+          Access to your download will be granted within a few hours.
+        </p>
+        <div class="sr7-success-ref" id="sr7SuccessRef">Ref: —</div>
+        <div class="sr7-success-btns">
+          <a class="sr7-success-btn primary" href="/p/downloads.html">
+            <svg class='line' viewBox='0 0 24 24'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'></path><path d='M7 10l5 5 5-5'></path><path d='M12 15V3'></path></svg>
+            Go to Downloads
+          </a>
+          <a class="sr7-success-btn outline" href="https://www.sr7themes.eu.org/">
+            Browse more
+          </a>
         </div>
+      </div>
 
-        <div class="sr7-field">
-          <label class="sr7-label" for="sr7SignupPassword">Password</label>
-          <div class="sr7-input-wrap">
-            <input class="sr7-input has-toggle" type="password" id="sr7SignupPassword" placeholder="Create a password" autocomplete="new-password">
-            <button type="button" class="sr7-toggle-pass" id="sr7SignupPassToggle" aria-label="Show password" onclick="sr7TogglePassword('sr7SignupPassword', this)">
-              <svg class="icon-on" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg class="icon-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            </button>
-          </div>
-          <div class="sr7-hint">Use at least 8 characters.</div>
-          <div class="sr7-error" id="sr7SignupPassErr"></div>
-        </div>
-
-        <button class="sr7-btn sr7-btn-primary" id="sr7SignupBtn" type="submit" style="margin-top:8px;" onclick="sr7HandleSignup()">
-          <div class="sr7-spinner" id="sr7SignupSpinner"></div>
-          <span id="sr7SignupBtnText">Create account</span>
-        </button>
-      </form>
-
-      <!-- ── FORGOT PASSWORD FORM ── -->
-      <form id="sr7ForgotForm" style="display:none;" onsubmit="return false;">
-        <div class="sr7-field">
-          <label class="sr7-label" for="sr7ResetEmail">Email address</label>
-          <input class="sr7-input" type="email" id="sr7ResetEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
-          <div class="sr7-hint">We'll send a password reset link to this address.</div>
-          <div class="sr7-error" id="sr7ResetEmailErr"></div>
-        </div>
-
-        <button class="sr7-btn sr7-btn-primary" id="sr7ResetBtn" type="submit" onclick="sr7HandlePasswordReset()">
-          <div class="sr7-spinner" id="sr7ResetSpinner"></div>
-          <span id="sr7ResetBtnText">Send reset link</span>
-        </button>
-
-        <div class="sr7-link-row">
-          <button type="button" class="sr7-link" onclick="sr7BackToLogin()">&larr; Back to sign in</button>
-        </div>
-      </form>
-
-    </div><!-- /card -->
-
-    <!-- Footer -->
-    <p class="sr7-footer">
-      By continuing, you agree to SR7Themes'
-      <a href="https://www.sr7themes.eu.org/p/privacy-policy.html">Privacy Policy</a> and
-      <a href="https://www.sr7themes.eu.org/p/terms-of-service.html">Terms of Service</a>.
-    </p>
-
+    </div>
   </div>
 </div>
 
 <div class="sr7-toast" id="sr7Toast"></div>
 
-<!-- ════════════════════════════════════════════════════════════════
-     FIREBASE SDK — modular compat build (works inside Blogger)
-════════════════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
 (function () {
   'use strict';
 
-  /* ════════════════════════════════════════════════════════════
-     1. CONFIG
-  ════════════════════════════════════════════════════════════ */
-  const firebaseConfig = {
-    apiKey:            "AIzaSyDhmyE8KMJ3kPv-lqqPaJPs-dhGT_khvnI",
-    authDomain:        "sr7themes-auth.firebaseapp.com",
-    projectId:         "sr7themes-auth",
-    storageBucket:     "sr7themes-auth.firebasestorage.app",
-    messagingSenderId: "1002371493022",
-    appId:             "1:1002371493022:web:dafdea91424f7cadf01f8f"
+  var UPI_ID = 'helaldistributors@okicici';
+
+  var QR_IMAGE_URL = 'https://blogger.googleusercontent.com/img/a/AVvXsEjBAUExYM9a7V8r7NTeC-L7tzDUkdLl60thpHDS4iAYLiTCNamiIEmdmB8Nh0_5ikKNWQw2fCAbvqzK6Cs7Ou_ehVLGMsTyRbaAVAkRkc0y_2SAZXshvwCYVpCRVqH5nxm52CopWQ3jjirnOcp5zKn5WIJ1TC8FS4epGSn9Ni68XAQsz80-CGtrvelGRBs';
+
+  var CFG = {
+    apiKey:            'AIzaSyDhmyE8KMJ3kPv-lqqPaJPs-dhGT_khvnI',
+    authDomain:        'sr7themes-auth.firebaseapp.com',
+    projectId:         'sr7themes-auth',
+    storageBucket:     'sr7themes-auth.firebasestorage.app',
+    messagingSenderId: '1002371493022',
+    appId:             '1:1002371493022:web:dafdea91424f7cadf01f8f'
   };
+  var LOGIN  = 'https://www.sr7themes.eu.org/p/login.html';
 
-  const DASHBOARD_URL = "https://www.sr7themes.eu.org/p/dashboard.html";
+  var fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(CFG);
+  var auth  = fbApp.auth();
+  var db    = fbApp.firestore();
 
-  if (!window.firebase.apps.length) {
-    window.firebase.initializeApp(firebaseConfig);
-  }
-  const auth = firebase.auth();
+  var ME        = null;
+  var PRODUCT   = null;
+  var PRODUCT_ID = '';
 
-  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function (err) {
-    console.warn('Persistence setup failed:', err.code);
-  });
+  var authTO = setTimeout(function () { window.location.href = LOGIN; }, 8000);
 
-  // If this page was reached as login.html?next=<url> (e.g. bounced
-  // here from checkout because the shopper wasn't signed in yet),
-  // send them back there after signing in instead of the dashboard.
-  // Only honored if it points back at our own domain.
-  function sr7GetRedirectTarget() {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const next = params.get('next');
-      if (next && /^https:\/\/(www\.)?sr7themes\.eu\.org\//i.test(next)) {
-        return next;
-      }
-    } catch (e) { /* fall through to default */ }
-    return DASHBOARD_URL;
-  }
-
-  function sr7RedirectToDashboard() {
-    window.location.href = sr7GetRedirectTarget();
-  }
-
-  /* ════════════════════════════════════════════════════════════
-     2. GOOGLE SIGN-IN — popup with automatic redirect fallback
-     ────────────────────────────────────────────────────────────
-     Tries popup first (best desktop UX), and falls back to a full
-     redirect automatically when popups are blocked/unreliable —
-     including a watchdog for cases where the popup call silently
-     never resolves at all (common in some mobile in-app browsers).
-  ════════════════════════════════════════════════════════════ */
-  const googleProvider = new firebase.auth.GoogleAuthProvider();
-  googleProvider.setCustomParameters({ prompt: 'select_account' });
-
-  function sr7ShouldUseRedirect() {
-    try {
-      const ua = navigator.userAgent || '';
-      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-      const isInAppBrowser = /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Twitter/i.test(ua);
-      const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
-      const isEmbedded = window.self !== window.top;
-      return !!(isMobile || isInAppBrowser || isStandalone || isEmbedded);
-    } catch (e) {
-      return true;
-    }
-  }
-
-  const POPUP_FALLBACK_CODES = [
-    'auth/popup-blocked',
-    'auth/operation-not-supported-in-this-environment',
-    'auth/cancelled-popup-request',
-    'auth/web-storage-unsupported',
-    'auth/internal-error',
-    'auth/timeout'
-  ];
-
-  function sr7GoogleSignIn() {
-    const btn = document.getElementById('sr7GoogleBtn');
-    const spinner = document.getElementById('sr7GoogleSpinner');
-    const icon = document.getElementById('sr7GoogleIcon');
-    const text = document.getElementById('sr7GoogleBtnText');
-
-    btn.disabled = true;
-    spinner.classList.add('show');
-    icon.style.display = 'none';
-    text.textContent = 'Connecting...';
-
-    function resetBtn() {
-      btn.disabled = false;
-      spinner.classList.remove('show');
-      icon.style.display = '';
-      text.textContent = 'Continue with Google';
-    }
-
-    function runRedirect() {
-      auth.signInWithRedirect(googleProvider).catch(function (err) {
-        resetBtn();
-        sr7Toast(sr7FriendlyError(err.code), 'error');
-      });
-    }
-
-    if (sr7ShouldUseRedirect()) {
-      runRedirect();
-      return;
-    }
-
-    let settled = false;
-    const watchdog = setTimeout(function () {
-      if (!settled) {
-        settled = true;
-        runRedirect();
-      }
-    }, 8000);
-
-    auth.signInWithPopup(googleProvider)
-      .then(function (result) {
-        if (settled) return;
-        settled = true;
-        clearTimeout(watchdog);
-        sr7Toast('Signed in as ' + (result.user.displayName || result.user.email), 'success');
-        sr7RedirectToDashboard();
-      })
-      .catch(function (err) {
-        if (settled) return;
-        settled = true;
-        clearTimeout(watchdog);
-        if (err.code === 'auth/popup-closed-by-user') {
-          resetBtn();
-          return;
-        }
-        if (POPUP_FALLBACK_CODES.indexOf(err.code) !== -1) {
-          runRedirect();
-          return;
-        }
-        resetBtn();
-        sr7Toast(sr7FriendlyError(err.code), 'error');
-      });
-  }
-
-  document.getElementById('sr7GoogleBtn').addEventListener('click', sr7GoogleSignIn);
-
-  /* ════════════════════════════════════════════════════════════
-     3. CATCH REDIRECT RESULT
-  ════════════════════════════════════════════════════════════ */
-  auth.getRedirectResult().then(function (result) {
-    if (result && result.user) {
-      sr7Toast('Signed in as ' + (result.user.displayName || result.user.email), 'success');
-      sr7RedirectToDashboard();
-    }
-  }).catch(function (err) {
-    if (!err || !err.code || err.code === 'auth/no-auth-event') return;
-    sr7Toast(sr7FriendlyError(err.code), 'error');
-  });
-
-  /* ════════════════════════════════════════════════════════════
-     4. AUTH STATE — if already signed in, skip the login form
-  ════════════════════════════════════════════════════════════ */
-  let sr7InitialCheckDone = false;
   auth.onAuthStateChanged(function (user) {
-    if (user && !sr7InitialCheckDone) {
-      sr7RedirectToDashboard();
-    }
-    sr7InitialCheckDone = true;
+    clearTimeout(authTO);
+    if (!user) { window.location.href = LOGIN; return; }
+    ME = user;
+    sr7Boot();
   });
 
-  /* ════════════════════════════════════════════════════════════
-     5. UI HELPERS
-  ════════════════════════════════════════════════════════════ */
-  const SR7_TOAST_ICONS = {
-    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
-    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7.5v6"/><path d="M12 16.5h.01"/></svg>'
-  };
+  function sr7Boot() {
+    var qrWrap = document.getElementById('sr7QrWrap');
+    document.getElementById('sr7UpiId').textContent = 'UPI ID: ' + UPI_ID;
+    if (QR_IMAGE_URL) {
+      qrWrap.innerHTML =
+        '<div class="sr7-qr-img-wrap"><img src="' + esc(QR_IMAGE_URL) + '" alt="Payment QR code"></div>';
+    } else {
+      qrWrap.innerHTML =
+        '<div class="sr7-qr-placeholder">' +
+          "<svg class='line' viewBox='0 0 24 24'>" +
+            "<rect x='3' y='3' width='7' height='7'></rect><rect x='14' y='3' width='7' height='7'></rect>" +
+            "<rect x='3' y='14' width='7' height='7'></rect>" +
+            "<path d='M14 14h2v2h-2z'></path><path d='M18 14h2v2h-2z'></path><path d='M14 18h2v2h-2z'></path><path d='M18 18h2v2h-2z'></path>" +
+          '</svg>' +
+          '<span>Add QR_IMAGE_URL in script</span>' +
+        '</div>';
+    }
 
-  function sr7Toast(msg, type, duration) {
-    const el = document.getElementById('sr7Toast');
-    const iconMarkup = SR7_TOAST_ICONS[type] ? '<span class="sr7-toast-icon">' + SR7_TOAST_ICONS[type] + '</span>' : '';
-    el.innerHTML = iconMarkup + '<span class="sr7-toast-msg"></span>';
-    el.querySelector('.sr7-toast-msg').textContent = msg;
-    el.className = 'sr7-toast show' + (type ? ' ' + type : '');
-    clearTimeout(el._sr7Timer);
-    el._sr7Timer = setTimeout(function () {
-      el.classList.remove('show');
-    }, duration || 3400);
+    document.getElementById('sr7NameInp').value  = ME.displayName || '';
+    document.getElementById('sr7EmailInp').value = ME.email || '';
+
+    var params    = new URLSearchParams(window.location.search);
+    PRODUCT_ID    = params.get('id') || '';
+
+    if (!PRODUCT_ID) {
+      sr7ShowError('No product specified. Please go back and try again.');
+      return;
+    }
+
+    sr7LoadProduct(PRODUCT_ID);
   }
 
-  function sr7SetLoading(btnId, spinnerId, textId, isLoading) {
-    document.getElementById(btnId).disabled = isLoading;
-    document.getElementById(spinnerId).classList.toggle('show', isLoading);
-    document.getElementById(textId).style.visibility = isLoading ? 'hidden' : '';
+  function sr7LoadProduct(pid) {
+    db.collection('Products').doc(pid).get()
+      .then(function (doc) {
+        if (!doc.exists) {
+          sr7ShowError('Product not found. It may have been removed.');
+          return;
+        }
+        PRODUCT = doc.data();
+        sr7RenderProduct(PRODUCT);
+        sr7Show();
+      })
+      .catch(function (err) {
+        console.error('[SR7 Checkout] Load product error:', err);
+        sr7ShowError('Could not load product details. Please refresh and try again.');
+      });
   }
 
-  function sr7ClearErrors() {
-    const ids = arguments;
-    for (let i = 0; i < ids.length; i++) {
-      const el = document.getElementById(ids[i]);
-      if (el) { el.textContent = ''; el.classList.remove('show'); }
+  function sr7RenderProduct(p) {
+    document.getElementById('sr7ProdName').textContent  = p.title   || 'SR7Themes Product';
+    document.getElementById('sr7ProdDesc').textContent  = p.description || '';
+    document.getElementById('sr7ProdPrice').textContent = p.price   || '-';
+    document.getElementById('sr7FormPrice').textContent = p.price   || '-';
+    document.getElementById('sr7ProdVer').textContent   = 'v' + (p.version || '1.0');
+
+    var thumbWrap = document.getElementById('sr7ProdThumbWrap');
+    if (p.thumbnail) {
+      thumbWrap.innerHTML = '<img src="' + esc(p.thumbnail) + '" alt="' + esc(p.title || '') + '">';
+      thumbWrap.querySelector('img').addEventListener('error', function () {
+        sr7ShowThumbFallback(thumbWrap);
+      });
+    } else {
+      sr7ShowThumbFallback(thumbWrap);
     }
   }
 
-  function sr7ShowError(id, msg) {
-    const el = document.getElementById(id);
-    if (el) { el.textContent = msg; el.classList.add('show'); }
+  function sr7ShowThumbFallback(wrap) {
+    wrap.innerHTML =
+      '<div class="sr7-prod-thumb-fallback">' +
+        "<svg class='line' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' rx='2'></rect><circle cx='9' cy='9' r='2'></circle><path d='m21 15-5-5L5 21'></path></svg>" +
+        '<span>No preview image</span>' +
+      '</div>';
   }
 
-  function sr7SetInputError(id, hasError) {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('is-error', hasError);
+  function isValidUrl(str) {
+    try {
+      var u = new URL(str);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (e) {
+      return false;
+    }
   }
 
-  function sr7FriendlyError(code) {
-    const map = {
-      'auth/user-not-found':            'No account found with that email.',
-      'auth/wrong-password':            'Incorrect password. Please try again.',
-      'auth/invalid-credential':        'Email or password is incorrect.',
-      'auth/invalid-email':             'Please enter a valid email address.',
-      'auth/email-already-in-use':      'This email is already registered.',
-      'auth/weak-password':             'Password must be at least 6 characters.',
-      'auth/too-many-requests':         'Too many attempts. Please wait and try again.',
-      'auth/network-request-failed':    'Network error. Check your connection and try again.',
-      'auth/popup-blocked':             'Your browser blocked the sign-in popup. Trying another way...',
-      'auth/unauthorized-domain':       'This domain isn\'t authorized for sign-in in Firebase. Contact support.',
-      'auth/operation-not-allowed':     'This sign-in method is currently disabled.',
-      'auth/account-exists-with-different-credential': 'An account already exists with this email using a different sign-in method.'
+  function setFieldError(inputId, errId, hasError) {
+    var input = document.getElementById(inputId);
+    var err = document.getElementById(errId);
+    input.classList.toggle('err', hasError);
+    err.classList.toggle('on', hasError);
+  }
+
+  document.getElementById('sr7SubmitBtn').addEventListener('click', function () {
+    var name    = document.getElementById('sr7NameInp').value.trim();
+    var website = document.getElementById('sr7WebsiteInp').value.trim();
+    var ref     = document.getElementById('sr7RefInp').value.trim();
+    var notes   = document.getElementById('sr7NotesInp').value.trim();
+
+    var firstInvalid = null;
+
+    var nameOk = !!name;
+    setFieldError('sr7NameInp', 'sr7NameErr', !nameOk);
+    if (!nameOk && !firstInvalid) firstInvalid = 'sr7NameInp';
+
+    var websiteOk = !!website && isValidUrl(website);
+    setFieldError('sr7WebsiteInp', 'sr7WebsiteErr', !websiteOk);
+    if (!websiteOk && !firstInvalid) firstInvalid = 'sr7WebsiteInp';
+
+    var refOk = !!ref;
+    setFieldError('sr7RefInp', 'sr7RefErr', !refOk);
+    if (!refOk && !firstInvalid) firstInvalid = 'sr7RefInp';
+
+    if (firstInvalid) {
+      document.getElementById(firstInvalid).focus();
+      return;
+    }
+
+    var btn  = document.getElementById('sr7SubmitBtn');
+    var spin = document.getElementById('sr7Spin');
+    var ico  = document.getElementById('sr7SubmitIco');
+    btn.disabled = true;
+    spin.classList.add('on');
+    ico.style.display = 'none';
+
+    var docData = {
+      buyerUid:         ME.uid,
+      buyerEmail:       ME.email || '',
+      buyerName:        name,
+      productId:        PRODUCT_ID,
+      productTitle:     (PRODUCT && PRODUCT.title) || '',
+      price:            (PRODUCT && PRODUCT.price) || '',
+      websiteUrl:       website,
+      paymentReference: ref,
+      notes:            notes,
+      status:           'pending',
+      createdAt:        firebase.firestore.FieldValue.serverTimestamp()
     };
-    if (map[code]) return map[code];
-    console.error('Firebase auth error:', code);
-    return 'Something went wrong' + (code ? ' (' + code + ')' : '') + '. Please try again.';
+
+    db.collection('purchaseRequests').add(docData)
+      .then(function () {
+        document.getElementById('sr7FormArea').style.display = 'none';
+        var sc = document.getElementById('sr7Success');
+        sc.classList.add('on');
+        document.getElementById('sr7SuccessRef').textContent = 'Ref: ' + ref;
+
+        var checkSvg = "<svg class='line' viewBox='0 0 24 24'><path d='M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z'></path><path d='M7.75 12L10.58 14.83L16.25 9.17004'></path></svg>";
+        document.getElementById('sr7Step2').className = 'sr7-step done';
+        document.getElementById('sr7Step2').querySelector('.sr7-step-num').innerHTML = checkSvg;
+        document.getElementById('sr7Step3').className = 'sr7-step done';
+        document.getElementById('sr7Step3').querySelector('.sr7-step-num').innerHTML = checkSvg;
+      })
+      .catch(function (err) {
+        console.error('[SR7 Checkout] Write error:', err);
+        btn.disabled = false;
+        spin.classList.remove('on');
+        ico.style.display = '';
+
+        /* NOTE: plain ASCII " - " here instead of an em dash character.
+           Blogger's HTML editor can mangle non-ASCII punctuation typed
+           into a <script> block into its literal entity text (e.g. a
+           real "-" turning into the six characters "&#8212;" showing
+           up on screen via textContent). Sticking to ASCII avoids that
+           entirely - see the note at the top of this file. */
+        var msg = 'Could not submit. Please try again.';
+        if (err.code === 'permission-denied') {
+          msg = 'Permission denied - update your Firestore security rules to allow creating documents in purchaseRequests for signed-in users (see the rules file provided separately).';
+        } else if (err.code === 'unavailable') {
+          msg = 'Firestore is unavailable. Check your internet connection and try again.';
+        }
+        toast(msg, 'err', 6000);
+      });
+  });
+
+  function sr7ShowError(msg) {
+    document.getElementById('sr7Load').innerHTML =
+      '<div style="text-align:center;padding:40px 20px;max-width:400px;margin:0 auto;">' +
+        '<div class="sr7-err-screen-icon">' +
+          "<svg class='line' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10'></circle><path d='M12 8v4'></path><path d='M12 16h.01'></path></svg>" +
+        '</div>' +
+        '<div style="font-size:17px;font-weight:700;margin-bottom:8px;">Something went wrong</div>' +
+        '<p style="font-size:13.5px;color:var(--sr7-muted);line-height:1.55;margin-bottom:20px;">' + esc(msg) + '</p>' +
+        '<button onclick="history.back()" style="height:44px;padding:0 22px;border-radius:12px;background:var(--sr7-accent);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--sr7-font);">Go back</button>' +
+      '</div>';
+    document.getElementById('sr7Load').style.display = 'flex';
   }
 
-  function sr7IsValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  function sr7Show() {
+    document.getElementById('sr7Load').style.display = 'none';
+    document.getElementById('sr7Main').classList.add('on');
   }
 
-  /* ════════════════════════════════════════════════════════════
-     6. PASSWORD VISIBILITY TOGGLE
-  ════════════════════════════════════════════════════════════ */
-  window.sr7TogglePassword = function (inputId, btn) {
-    const input = document.getElementById(inputId);
-    const isVisible = input.type === 'text';
-    input.type = isVisible ? 'password' : 'text';
-    btn.classList.toggle('is-visible', !isVisible);
-    btn.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  var TICONS = {
+    ok:  "<svg class='line' viewBox='0 0 24 24'><path d='M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z'></path><path d='M7.75 12L10.58 14.83L16.25 9.17004'></path></svg>",
+    err: "<svg class='line' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10'></circle><path d='M12 8v4'></path><path d='M12 16h.01'></path></svg>"
   };
-
-  /* ════════════════════════════════════════════════════════════
-     7. TAB SWITCHING
-  ════════════════════════════════════════════════════════════ */
-  window.sr7SwitchTab = function (tab) {
-    const isLogin = tab === 'login';
-    document.getElementById('sr7LoginForm').style.display  = isLogin ? '' : 'none';
-    document.getElementById('sr7SignupForm').style.display = isLogin ? 'none' : '';
-    document.getElementById('sr7ForgotForm').style.display = 'none';
-    document.getElementById('sr7TabLogin').classList.toggle('active', isLogin);
-    document.getElementById('sr7TabSignup').classList.toggle('active', !isLogin);
-    document.getElementById('sr7TabLogin').setAttribute('aria-selected', isLogin);
-    document.getElementById('sr7TabSignup').setAttribute('aria-selected', !isLogin);
-    document.querySelector('.sr7-tabs').style.display = '';
-    document.getElementById('sr7Subtitle').textContent = isLogin
-      ? 'Sign in to continue to your account'
-      : 'Create an account to get started';
-  };
-
-  window.sr7ShowForgot = function () {
-    document.getElementById('sr7LoginForm').style.display  = 'none';
-    document.getElementById('sr7SignupForm').style.display = 'none';
-    document.getElementById('sr7ForgotForm').style.display = '';
-    document.querySelector('.sr7-tabs').style.display = 'none';
-    document.getElementById('sr7Subtitle').textContent = 'Enter your email to reset your password';
-    sr7ClearErrors('sr7ResetEmailErr');
-    document.getElementById('sr7ResetEmail').focus();
-  };
-
-  window.sr7BackToLogin = function () {
-    sr7SwitchTab('login');
-  };
-
-  /* ════════════════════════════════════════════════════════════
-     8. LOGIN
-  ════════════════════════════════════════════════════════════ */
-  window.sr7HandleLogin = function () {
-    sr7ClearErrors('sr7LoginEmailErr', 'sr7LoginPassErr');
-    sr7SetInputError('sr7LoginEmail', false);
-    sr7SetInputError('sr7LoginPassword', false);
-
-    const email = document.getElementById('sr7LoginEmail').value.trim();
-    const pass  = document.getElementById('sr7LoginPassword').value;
-
-    if (!email || !sr7IsValidEmail(email)) {
-      sr7ShowError('sr7LoginEmailErr', 'Enter a valid email address.');
-      sr7SetInputError('sr7LoginEmail', true);
-      return;
-    }
-    if (!pass) {
-      sr7ShowError('sr7LoginPassErr', 'Password is required.');
-      sr7SetInputError('sr7LoginPassword', true);
-      return;
-    }
-
-    sr7SetLoading('sr7LoginBtn', 'sr7LoginSpinner', 'sr7LoginBtnText', true);
-
-    auth.signInWithEmailAndPassword(email, pass)
-      .then(function () {
-        sr7Toast('Signed in successfully', 'success');
-        sr7RedirectToDashboard();
-      })
-      .catch(function (err) {
-        sr7ShowError('sr7LoginPassErr', sr7FriendlyError(err.code));
-        sr7SetInputError('sr7LoginPassword', true);
-      })
-      .finally(function () {
-        sr7SetLoading('sr7LoginBtn', 'sr7LoginSpinner', 'sr7LoginBtnText', false);
-      });
-  };
-
-  /* ════════════════════════════════════════════════════════════
-     9. SIGN UP
-  ════════════════════════════════════════════════════════════ */
-  window.sr7HandleSignup = function () {
-    sr7ClearErrors('sr7SignupNameErr', 'sr7SignupEmailErr', 'sr7SignupPassErr');
-    sr7SetInputError('sr7SignupEmail', false);
-    sr7SetInputError('sr7SignupPassword', false);
-
-    const name  = document.getElementById('sr7SignupName').value.trim();
-    const email = document.getElementById('sr7SignupEmail').value.trim();
-    const pass  = document.getElementById('sr7SignupPassword').value;
-
-    if (!email || !sr7IsValidEmail(email)) {
-      sr7ShowError('sr7SignupEmailErr', 'Enter a valid email address.');
-      sr7SetInputError('sr7SignupEmail', true);
-      return;
-    }
-    if (pass.length < 8) {
-      sr7ShowError('sr7SignupPassErr', 'Use at least 8 characters.');
-      sr7SetInputError('sr7SignupPassword', true);
-      return;
-    }
-
-    sr7SetLoading('sr7SignupBtn', 'sr7SignupSpinner', 'sr7SignupBtnText', true);
-
-    auth.createUserWithEmailAndPassword(email, pass)
-      .then(function (cred) {
-        const profileUpdate = name ? cred.user.updateProfile({ displayName: name }) : Promise.resolve();
-        return profileUpdate.then(function () {
-          return cred.user.sendEmailVerification();
-        });
-      })
-      .then(function () {
-        sr7Toast('Account created - check your email to verify', 'success');
-        sr7RedirectToDashboard();
-      })
-      .catch(function (err) {
-        sr7ShowError('sr7SignupEmailErr', sr7FriendlyError(err.code));
-        sr7SetInputError('sr7SignupEmail', true);
-      })
-      .finally(function () {
-        sr7SetLoading('sr7SignupBtn', 'sr7SignupSpinner', 'sr7SignupBtnText', false);
-      });
-  };
-
-  /* ════════════════════════════════════════════════════════════
-     10. PASSWORD RESET
-  ════════════════════════════════════════════════════════════ */
-  window.sr7HandlePasswordReset = function () {
-    sr7ClearErrors('sr7ResetEmailErr');
-    sr7SetInputError('sr7ResetEmail', false);
-
-    const email = document.getElementById('sr7ResetEmail').value.trim();
-    if (!email || !sr7IsValidEmail(email)) {
-      sr7ShowError('sr7ResetEmailErr', 'Enter a valid email address.');
-      sr7SetInputError('sr7ResetEmail', true);
-      return;
-    }
-
-    sr7SetLoading('sr7ResetBtn', 'sr7ResetSpinner', 'sr7ResetBtnText', true);
-
-    auth.sendPasswordResetEmail(email)
-      .then(function () {
-        sr7Toast('Reset link sent - check your inbox', 'success');
-        sr7BackToLogin();
-      })
-      .catch(function (err) {
-        sr7ShowError('sr7ResetEmailErr', sr7FriendlyError(err.code));
-        sr7SetInputError('sr7ResetEmail', true);
-      })
-      .finally(function () {
-        sr7SetLoading('sr7ResetBtn', 'sr7ResetSpinner', 'sr7ResetBtnText', false);
-      });
-  };
-
-  /* ════════════════════════════════════════════════════════════
-     11. ENTER-KEY NAVIGATION
-  ════════════════════════════════════════════════════════════ */
-  document.getElementById('sr7LoginEmail').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('sr7LoginPassword').focus(); }
-  });
-  document.getElementById('sr7LoginPassword').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); sr7HandleLogin(); }
-  });
-  document.getElementById('sr7SignupEmail').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('sr7SignupPassword').focus(); }
-  });
-  document.getElementById('sr7SignupPassword').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); sr7HandleSignup(); }
-  });
-  document.getElementById('sr7ResetEmail').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); sr7HandlePasswordReset(); }
-  });
+  function toast(msg, type, dur) {
+    var el = document.getElementById('sr7Toast');
+    el.innerHTML = (TICONS[type] ? '<span class="sr7-toast-ico">' + TICONS[type] + '</span>' : '') +
+                   '<span class="sr7-toast-msg"></span>';
+    el.querySelector('.sr7-toast-msg').textContent = msg;
+    el.className = 'sr7-toast on' + (type ? ' ' + type : '');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('on'); }, dur || 3600);
+  }
 
 })();
 </script>
