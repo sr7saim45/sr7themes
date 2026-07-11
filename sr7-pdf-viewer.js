@@ -24,7 +24,7 @@
   var SR7_PDF_CONFIG = {
     // Same delivery pattern as the SR7 Premium Video Player: static JSON
     // served from a GitHub raw URL, no server required.
-    authUrl: 'https://raw.githubusercontent.com/REPLACE_ME/sr7-licenses/main/sr7-pdf-auth.json',
+    authUrl: 'https://raw.githubusercontent.com/sr7saim45/sr7themes/main/sr7-pdf-auth.json',
     pdfjsLib: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
     pdfjsWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
     minScale: 0.4,
