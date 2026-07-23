@@ -34,7 +34,7 @@
     },
     {
       "_note": "EXAMPLE — replace with real customer domain and regenerated token",
-      "d": "https://sr7stream.blogspot.com", 
+      "d": "sr7stream.blogspot.com", 
       "t": "hs1zzg"
     }
   ]
